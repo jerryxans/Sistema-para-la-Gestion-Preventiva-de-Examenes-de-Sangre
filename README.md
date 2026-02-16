@@ -40,3 +40,11 @@ Exadesan es una plataforma avanzada de gestión clínica desarrollada en Django 
 
 # Gráficos de Evolución
 El sistema agrupa los resultados por tipo de examen y genera etiquetas temporales para que el usuario visualice si su salud está mejorando o requiere intervención.
+
+# Desarrollado por:
+- Jerry Sarmiento
+- Samuel Pérez
+- José Arcia
+
+## Contacto: 
+jerryjosesarmiento040403@gmail.com  'Líder del Grupo'
