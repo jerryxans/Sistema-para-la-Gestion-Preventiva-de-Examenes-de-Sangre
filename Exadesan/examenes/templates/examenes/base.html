@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}GESTIÓN PREVENTIVA DE EXÁMENES{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+  <style>
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1060;
+    }
+    .toast-glass {
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-weight: 500;
+      min-width: 280px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.5s ease forwards;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .toast-success { background-color: #e6f4ea; color: #155724; border-left: 5px solid #28a745; }
+    .toast-error, .toast-danger { background-color: #fdecea; color: #721c24; border-left: 5px solid #dc3545; }
+    .toast-warning { background-color: #fff4e5; color: #856404; border-left: 5px solid #ffc107; }
+    .toast-info { background-color: #e8f4fd; color: #0c5460; border-left: 5px solid #17a2b8; }
+
+    .gradient-animated {
+      background: linear-gradient(270deg, #0d6efd, #20c997, #0dcaf0);
+      background-size: 600% 600%;
+      animation: gradientShift 12s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .brand-animated {
+      animation: fadeInBrand 2s ease forwards, glowBrand 3s ease-in-out infinite alternate;
+    }
+    @keyframes fadeInBrand {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes glowBrand {
+      from { text-shadow: 0 0 5px rgba(255,255,255,0.4); }
+      to { text-shadow: 0 0 15px rgba(255,255,255,0.8); }
+    }
+
+    .nav-btn {
+      display: inline-block;
+      padding: 0.4rem 0.9rem;
+      border: 2px solid transparent;
+      border-radius: 25px;
+      background-color: transparent;
+      color: white;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      animation: fadeInBrand 1.5s ease forwards, glowBrand 3s ease-in-out infinite alternate;
+    }
+    .nav-btn:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: white;
+      color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+
+    footer {
+      color: #fff;
+      padding: 1rem 0;
+      margin-top: 2rem;
+    }
+    footer p { margin: 0; font-size: 0.9rem; }
+    
+    .brand-logo {
+      height: 35px;
+      width: auto;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-dark gradient-animated shadow-sm py-3">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold fs-5 text-white brand-animated d-flex align-items-center" href="/">
+        <img src="{% static 'img/med.png' %}" alt="Logo" class="brand-logo">
+        GESTIÓN PREVENTIVA DE EXÁMENES
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center gap-3">
+          {% if user.is_authenticated %}
+            {% if user.perfil.rol == "ADMIN" %}
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:dashboard_admin' %}">👨‍💼 ADMIN</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:cargar_examen' %}">📂 CARGAR EXÁMENES</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:lista_usuarios' %}">👥USUARIOS</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:estadisticas_medico' %}">📊ESTADISTICAS</a></li>
+              {% elif user.perfil.rol == "MEDICO" %}
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:dashboard_medico' %}">🧑‍⚕️ MÉDICO</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:cargar_examen' %}">📥CARGAR EXAMEN</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:lista_pacientes' %}">🧑‍⚕️CONSULTA</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:estadisticas_medico' %}">📈ESTADISTICAS</a></li>
+              {% elif user.perfil.rol == "PACIENTE" %}
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:dashboard_paciente' %}">🧑‍ PACIENTE</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:grafico_glucosa' %}">📊 EVOLUCION</a></li>
+              <li class="nav-item"><a class="nav-btn" href="{% url 'examenes:lista_examenes' %}">📑 HISTORIAL</a></li>
+              {% endif %}
+            <li class="nav-item">
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="nav-btn">SALIR</button>
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-btn d-flex align-items-center gap-2" href="{% url 'login' %}">
+                🔐 INGRESAR
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% if messages %}
+    <div class="toast-container">
+      {% for message in messages %}
+        <div class="toast show toast-glass toast-{{ message.tags }} mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="toast-body">
+              {% if message.tags == "success" %}✔️ {% elif message.tags == "error" or message.tags == "danger" %}❌ {% elif message.tags == "warning" %}⚠️ {% elif message.tags == "info" %}ℹ️ {% endif %}
+              {{ message }}
+            </div>
+            <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="container mt-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="gradient-animated shadow-sm py-3 text-center">
+  <div class="container">
+    <p class="mb-1 fw-bold">&copy; 2025 Sistema Médico | Todos los derechos reservados</p>
+    <p class="text-light mb-0">Tecnología innovadora para transformar la gestión clínica</p>
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

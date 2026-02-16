@@ -1,0 +1,45 @@
+{% extends "examenes/base.html" %}
+
+{% block title %}Nuevo Tipo de Examen{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold text-center mb-4 text-success">➕ NUEVO TIPO DE EXAMEN</h2>
+
+  <div class="card glass-card shadow-sm p-4 mx-auto" style="max-width: 600px;">
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="mb-3">
+        <label class="form-label fw-bold">Nombre</label>
+        <input type="text" name="nombre" class="form-control rounded-pill shadow-sm" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Unidad</label>
+        <input type="text" name="unidad" class="form-control rounded-pill shadow-sm" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Rango Bajo</label>
+        <input type="number" step="0.01" name="rango_bajo" class="form-control rounded-pill shadow-sm" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Rango Normal</label>
+        <input type="number" step="0.01" name="rango_normal" class="form-control rounded-pill shadow-sm" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Rango Alto</label>
+        <input type="number" step="0.01" name="rango_alto" class="form-control rounded-pill shadow-sm" required>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4">
+        <button type="submit" class="btn btn-outline-success rounded-pill px-4">Guardar</button>
+        <a href="{% url 'examenes:ver_catalogo' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

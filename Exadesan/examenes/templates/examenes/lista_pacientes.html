@@ -1,0 +1,278 @@
+{% extends "examenes/base.html" %}
+{% load static %}
+
+{% block title %}Pacientes{% endblock %}
+
+{% block content %}
+<div class="medical-bg min-vh-100">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-5 shadow-sm">
+      <div class="header-content">
+        <h2 class="fw-bold fs-3 brand-animated mb-1">👨‍⚕️ GESTIÓN DE PACIENTES</h2>
+        <p class="mb-0 small opacity-75 fw-light">Historial clínico y reportes de usuarios registrados</p>
+      </div>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-start justify-content-center py-4">
+      <div class="container px-3" style="max-width: 1100px;"> 
+        
+        <div class="row g-3 mb-4 align-items-center">
+          <div class="col-12 col-md-8">
+            <div class="search-wrapper">
+              <span class="search-icon">🔍</span>
+              <input id="searchInput" type="text" class="form-control-custom shadow-sm" 
+                     placeholder="Buscar por nombre, email o teléfono...">
+            </div>
+          </div>
+          <div class="col-12 col-md-4 text-md-end">
+            <div class="d-flex align-items-center justify-content-md-end gap-2">
+              <span class="small fw-bold text-muted">Mostrar:</span>
+              <select id="rowsPerPage" class="form-select-custom shadow-sm">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card glass-card shadow-lg border-0">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0" id="pacientesTable">
+                <thead>
+                  <tr>
+                    <th class="px-4">Paciente</th>
+                    <th>Contacto</th>
+                    <th class="text-center">Estado / Teléfono</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="pacientesBody">
+                  {% for paciente in pacientes %}
+                  <tr data-row="paciente">
+                    <td class="px-4">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-circle me-3">{{ paciente.username|slice:":1"|upper }}</div>
+                        <div>
+                          <div class="fw-bold text-dark mb-0">{{ paciente.username }}</div>
+                          <span class="text-muted tiny">ID: #00{{ paciente.id }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small text-secondary">{{ paciente.email }}</div>
+                    </td>
+                    <td class="text-center">
+                      {% if paciente.perfil.telefono %}
+                        <span class="badge-tel">📞 {{ paciente.perfil.telefono }}</span>
+                      {% else %}
+                        <span class="badge-tel empty">No registrado</span>
+                      {% endif %}
+                    </td>
+                    <td class="px-4">
+                      <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'examenes:exportar_reporte_excel_con_id' paciente.id %}" 
+                        class="btn-action-pill btn-excel" title="Exportar Excel">📊 Reporte</a>
+                        <a href="{% url 'examenes:lista_examenes' %}?paciente={{ paciente.id }}" 
+                           class="btn-action-pill btn-view" title="Ver Historial">🔍 Exámenes</a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr id="emptyRow">
+                    <td colspan="4" class="text-center text-muted py-5">No hay pacientes registrados.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-column align-items-center mt-4 pb-5">
+            <nav class="pagination-modern shadow-sm" id="pagination">
+              </nav>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --deep-blue: #0056b3;
+    --soft-bg: #f8fbff;
+    --glass-white: rgba(255, 255, 255, 0.98);
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+  .medical-bg {
+    background-color: var(--soft-bg);
+    background-image: radial-gradient(#d1e1ff 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
+
+  .gradient-animated {
+    background: linear-gradient(-45deg, #007bff, #20c997, #6610f2);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+  }
+  @keyframes gradientFlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+  .glass-card {
+    background: var(--glass-white) !important;
+    border-radius: 24px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: 22px; }
+
+  thead th {
+    background: #f8fbff !important;
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 1px; color: #888; padding: 15px;
+    border-bottom: 2px solid #f0f4f8;
+  }
+  .avatar-circle {
+    width: 38px; height: 38px; background: #e3f2fd; color: #007bff;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.9rem;
+  }
+  .badge-tel {
+    font-size: 0.75rem; font-weight: 700; background: #e8f5e9;
+    color: #2e7d32; padding: 4px 12px; border-radius: 50px;
+  }
+  .badge-tel.empty { background: #f5f5f5; color: #9e9e9e; }
+
+  .search-wrapper { position: relative; }
+  .search-icon { position: absolute; left: 15px; top: 12px; opacity: 0.5; }
+  .form-control-custom {
+    width: 100%; padding: 12px 12px 12px 45px;
+    border-radius: 14px; border: 1px solid #e0e0e0;
+    font-size: 0.9rem; transition: 0.3s;
+  }
+  .form-select-custom {
+    border-radius: 12px; border: 1px solid #e0e0e0; padding: 8px 30px 8px 12px;
+    font-size: 0.85rem; font-weight: 600;
+  }
+
+  .btn-action-pill {
+    padding: 6px 14px; border-radius: 50px; font-size: 0.75rem;
+    font-weight: 700; text-decoration: none; transition: 0.2s;
+    display: inline-block;
+  }
+  .btn-excel { background: #e7f3ff; color: #007bff; }
+  .btn-view { background: #f0f4f8; color: #546e7a; }
+  .btn-action-pill:hover { transform: translateY(-2px); filter: brightness(0.95); }
+
+  .pagination-modern {
+    background: white; padding: 5px; border-radius: 50px;
+    display: flex; gap: 5px;
+  }
+  .page-link-custom {
+    width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; text-decoration: none; color: #555; font-weight: 600; font-size: 0.8rem;
+  }
+  .page-link-custom.active { background: var(--primary-blue); color: white; }
+
+  @media (max-width: 576px) {
+    .btn-action-pill { padding: 8px; width: 40px; overflow: hidden; white-space: nowrap; }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const rowsSelect = document.getElementById("rowsPerPage");
+    const tbody = document.getElementById("pacientesBody");
+    const allRows = Array.from(tbody.querySelectorAll('tr[data-row="paciente"]'));
+    const pagination = document.getElementById("pagination");
+
+    let currentPage = 1;
+
+    function renderTable() {
+      const rowsPerPage = parseInt(rowsSelect.value);
+      const q = searchInput.value.toLowerCase();
+      
+      const filtered = allRows.filter(row => row.innerText.toLowerCase().includes(q));
+      const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
+
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      allRows.forEach(r => r.style.display = "none");
+      const start = (currentPage - 1) * rowsPerPage;
+      filtered.slice(start, start + rowsPerPage).forEach(r => r.style.display = "");
+
+      renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+      pagination.innerHTML = "";
+      for (let i = 1; i <= totalPages; i++) {
+        const a = document.createElement("a");
+        a.className = `page-link-custom ${i === currentPage ? 'active' : ''}`;
+        a.textContent = i;
+        a.href = "#";
+        a.onclick = (e) => { e.preventDefault(); currentPage = i; renderTable(); };
+        pagination.appendChild(a);
+      }
+    }
+
+    searchInput.addEventListener("input", () => { currentPage = 1; renderTable(); });
+    rowsSelect.addEventListener("change", () => { currentPage = 1; renderTable(); });
+
+    renderTable();
+
+    window.agregarPacienteFila = function(data) {
+      const emptyRow = document.getElementById("emptyRow");
+      if (emptyRow) emptyRow.remove();
+
+      const nuevaFila = `
+        <tr data-row="paciente">
+          <td class="px-4">
+            <div class="d-flex align-items-center">
+              <div class="avatar-circle me-3">${data.username.charAt(0).toUpperCase()}</div>
+              <div>
+                <div class="fw-bold text-dark mb-0">${data.username}</div>
+                <span class="text-muted tiny">ID: #00${data.id}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="small text-secondary">${data.email}</div>
+          </td>
+          <td class="text-center">
+            ${data.telefono ? `<span class="badge-tel">📞 ${data.telefono}</span>` 
+                            : `<span class="badge-tel empty">No registrado</span>`}
+          </td>
+          <td class="px-4">
+            <div class="d-flex justify-content-center gap-2">
+              <a href="/examenes/exportar_reporte_excel/${data.id}/" 
+                 class="btn-action-pill btn-excel" title="Exportar Excel">📊 Reporte</a>
+              <a href="/examenes/lista_examenes?paciente=${data.id}" 
+                 class="btn-action-pill btn-view" title="Ver Historial">🔍 Exámenes</a>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      tbody.insertAdjacentHTML("beforeend", nuevaFila);
+      allRows.push(tbody.lastElementChild);
+      renderTable();
+    };
+  });
+</script>
+{% endblock %}

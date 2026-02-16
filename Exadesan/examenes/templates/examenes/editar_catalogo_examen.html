@@ -1,0 +1,225 @@
+{% extends "examenes/base.html" %}
+{% block title %}Editar Examen Clínico{% endblock %}
+
+{% block content %}
+<div class="medical-bg min-vh-100">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-5 shadow-sm">
+      <div class="header-content">
+        <h2 class="fw-bold fs-3 brand-animated mb-1">✏️ EDITAR EXAMEN CLÍNICO</h2>
+        <p class="mb-0 small opacity-75 fw-light">Modifica los parámetros con precisión y seguridad</p>
+      </div>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-4">
+      <div class="container px-3" style="max-width: 800px;">
+        
+        {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-pill text-center fw-semibold border-0" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="card glass-card shadow-lg border-0">
+          <div class="card-body p-4 p-md-5">
+            
+            <form id="editarExamenForm" method="post" novalidate>
+              {% csrf_token %}
+              {{ form.non_field_errors }}
+
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <label class="form-label-custom">🧪 Nombre del Examen</label>
+                  <div class="input-group-custom shadow-sm">
+                    <span class="icon">🧪</span>
+                    {{ form.nombre }}
+                  </div>
+                  {% if form.nombre.errors %}
+                    <div class="error-text">{{ form.nombre.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom">📏 Unidad de Medida</label>
+                  <div class="input-group-custom shadow-sm">
+                    <span class="icon">📏</span>
+                    {{ form.unidad_medida }}
+                  </div>
+                  {% if form.unidad_medida.errors %}
+                    <div class="error-text">{{ form.unidad_medida.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom">🔽 Rango Mínimo</label>
+                  <div class="input-group-custom shadow-sm">
+                    <span class="icon">🔽</span>
+                    {{ form.rango_min }}
+                  </div>
+                  {% if form.rango_min.errors %}
+                    <div class="error-text">{{ form.rango_min.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom">🔼 Rango Máximo</label>
+                  <div class="input-group-custom shadow-sm">
+                    <span class="icon">🔼</span>
+                    {{ form.rango_max }}
+                  </div>
+                  {% if form.rango_max.errors %}
+                    <div class="error-text">{{ form.rango_max.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label-custom">🧷 Código de Referencia</label>
+                  <div class="input-group-custom shadow-sm">
+                    <span class="icon">🧷</span>
+                    {{ form.codigo_referencia }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-5 p-4 rounded-4 bg-light border-start border-4 border-primary shadow-sm">
+                <h6 class="fw-bold text-dark mb-3">📋 Resumen de cambios</h6>
+                <div class="row g-2">
+                  <div class="col-6 col-md-4 small text-muted">Nombre: <b class="text-dark" id="previewNombre">-</b></div>
+                  <div class="col-6 col-md-4 small text-muted">Unidad: <b class="text-dark" id="previewUnidad">-</b></div>
+                  <div class="col-12 col-md-4 small text-muted">Rango: <b class="text-dark"><span id="previewMin">-</span> a <span id="previewMax">-</span></b></div>
+                </div>
+                <div id="validationAlert" class="alert alert-danger mt-3 py-2 small" style="display:none; border-radius: 12px;">
+                  ⚠️ El rango mínimo no puede ser mayor que el máximo.
+                </div>
+              </div>
+
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-5">
+                <button type="submit" class="btn btn-submit px-5 shadow-blue">
+                  💾 Actualizar Registro
+                </button>
+                <a href="{% url 'examenes:ver_catalogo' %}" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                  Cancelar
+              </a>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --deep-blue: #0056b3;
+    --soft-bg: #f8fbff;
+    --glass-white: rgba(255, 255, 255, 0.98);
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+  .medical-bg {
+    background-color: var(--soft-bg);
+    background-image: radial-gradient(#d1e1ff 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
+
+  .gradient-animated {
+    background: linear-gradient(-45deg, #007bff, #6610f2, #00d4ff);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+  }
+  @keyframes gradientFlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+  .glass-card {
+    background: var(--glass-white) !important;
+    border-radius: 28px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: 26px; }
+
+  .form-label-custom { font-size: 0.85rem; font-weight: 700; color: #555; margin-bottom: 8px; display: block; }
+  .input-group-custom {
+    display: flex; align-items: center; background: #fdfdfd; 
+    border: 1px solid #e2e8f0; border-radius: 14px; padding: 2px 12px;
+    transition: 0.3s;
+  }
+  .input-group-custom:focus-within {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1) !important;
+  }
+  .input-group-custom input {
+    border: none !important; background: transparent !important;
+    padding: 10px 0; width: 100%; font-size: 0.95rem; outline: none;
+  }
+  .input-group-custom .icon { margin-right: 10px; opacity: 0.7; }
+
+  .error-text { color: #dc3545; font-size: 0.75rem; font-weight: 600; margin-top: 5px; }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+    color: white; border: none; padding: 12px 30px; border-radius: 50px;
+    font-weight: 700; transition: 0.3s;
+  }
+  .btn-submit:hover { transform: translateY(-2px); filter: brightness(1.1); }
+  .btn-outline-secondary { border-radius: 50px; }
+
+  @media (max-width: 576px) {
+    .glass-card .card-body { padding: 1.5rem !important; }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("editarExamenForm");
+    const previewMap = {
+      nombre: "previewNombre",
+      unidad_medida: "previewUnidad",
+      rango_min: "previewMin",
+      rango_max: "previewMax"
+    };
+
+    Object.keys(previewMap).forEach(field => {
+      const input = form.querySelector(`[name="${field}"]`);
+      if (input) {
+        document.getElementById(previewMap[field]).textContent = input.value || "-";
+        input.addEventListener("input", () => {
+          document.getElementById(previewMap[field]).textContent = input.value || "-";
+          validateRanges();
+        });
+      }
+    });
+
+    function validateRanges() {
+      const minVal = parseFloat(form.querySelector('[name="rango_min"]').value);
+      const maxVal = parseFloat(form.querySelector('[name="rango_max"]').value);
+      const alertBox = document.getElementById("validationAlert");
+
+      if (!isNaN(minVal) && !isNaN(maxVal) && minVal > maxVal) {
+        alertBox.style.display = "";
+      } else {
+        alertBox.style.display = "none";
+      }
+    }
+    
+    validateRanges();
+  });
+</script>
+{% endblock %}

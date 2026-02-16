@@ -1,0 +1,226 @@
+{% extends "examenes/base.html" %}
+{% load static %}
+
+{% block title %}Resultados Clínicos{% endblock %}
+
+{% block content %}
+<div class="medical-bg min-vh-100">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-5 shadow-sm">
+      <div class="header-content">
+        <h2 class="fw-bold fs-3 brand-animated mb-1">📋 HISTORIAL DE RESULTADOS</h2>
+        <p class="mb-0 small opacity-75 fw-light">Consulta y descarga de registros clínicos</p>
+      </div>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+      <div class="container px-3" style="max-width: 1000px;">
+        
+        <div class="row g-3 mb-4 justify-content-center">
+          <div class="col-12">
+            <div class="search-wrapper">
+              <span class="search-icon">🔍</span>
+              <input id="searchInput" type="text" class="form-control-custom shadow-sm" 
+                     placeholder="Buscar por tipo, fecha o nivel de riesgo...">
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mb-3">
+          <span id="counterInfo" class="badge-status-info shadow-sm">Calculando registros...</span>
+        </div>
+
+        <div class="card glass-card shadow-lg border-0 mx-auto">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0 text-center" id="examenesTable">
+                <thead>
+                  <tr>
+                    <th class="px-4">#</th>
+                    <th>Fecha</th>
+                    <th>Tipo de Examen</th>
+                    <th>Resultado</th>
+                    <th>Riesgo</th>
+                    <th class="px-4">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="examenesBody">
+                  {% for examen in examenes %}
+                  <tr data-row="examen" class="animate-row">
+                    <td class="px-4 text-muted small">{{ forloop.counter }}</td>
+                    <td class="small fw-bold">{{ examen.fecha_examen|date:"d/m/Y" }}</td>
+                    <td><div class="fw-bold text-dark text-nowrap">{{ examen.examen_tipo.nombre }}</div></td>
+                    <td><span class="fw-bold text-primary fs-6">{{ examen.valor }}</span></td>
+                    <td>
+                      {% if examen.nivel_riesgo == "ALTO" %}
+                        <span class="badge-riesgo alto">ALTO</span>
+                      {% elif examen.nivel_riesgo == "NORMAL" %}
+                        <span class="badge-riesgo normal">NORMAL</span>
+                      {% else %}
+                        <span class="badge-riesgo bajo">BAJO</span>
+                      {% endif %}
+                    </td>
+                    <td class="px-4">
+                      <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'examenes:ver_examen' examen.id %}" class="btn-icon shadow-sm" title="Ver">🔍</a>
+                        <a href="{% url 'examenes:descargar_examen' examen.id %}" class="btn-icon download shadow-sm" title="Descargar">⬇️</a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr id="noDataRow">
+                    <td colspan="6" class="text-center text-muted py-5">No hay registros disponibles.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4 pb-4">
+            <div class="pagination-modern shadow-sm">
+              <a href="#" id="prevPage" class="page-link-custom">«</a>
+              <span id="pageInfo" class="page-current">1</span>
+              <a href="#" id="nextPage" class="page-link-custom">»</a>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --soft-bg: #f8fbff;
+    --glass-white: rgba(255, 255, 255, 0.98);
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+  .medical-bg {
+    background-color: var(--soft-bg);
+    background-image: radial-gradient(#d1e1ff 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
+
+  .gradient-animated {
+    background: linear-gradient(-45deg, #007bff, #20c997, #6610f2);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+  }
+  @keyframes gradientFlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+  .glass-card {
+    background: var(--glass-white) !important;
+    border-radius: 24px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+    width: 100%;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: 22px; }
+
+  thead th {
+    background: #f8fbff !important;
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 1px; color: #888; padding: 15px;
+    border-bottom: 2px solid #f0f4f8;
+  }
+  
+  .badge-riesgo { font-size: 0.65rem; font-weight: 800; padding: 4px 12px; border-radius: 50px; }
+  .alto { background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; }
+  .normal { background: #f0fff4; color: #38a169; border: 1px solid #9ae6b4; }
+  .bajo { background: #ebf8ff; color: #3182ce; border: 1px solid #bee3f8; }
+
+  .search-wrapper { position: relative; }
+  .search-icon { position: absolute; left: 15px; top: 12px; opacity: 0.5; }
+  .form-control-custom {
+    width: 100%; padding: 12px 12px 12px 45px;
+    border-radius: 14px; border: 1px solid #e0e0e0;
+    font-size: 0.9rem; transition: 0.3s;
+  }
+
+  .badge-status-info {
+    background: white; border: 1px solid #e0e0e0; padding: 5px 15px;
+    border-radius: 50px; font-size: 0.75rem; color: #666; font-weight: 700;
+  }
+
+  .btn-icon {
+    width: 35px; height: 35px; border-radius: 10px; background: #f1f5f9;
+    display: flex; align-items: center; justify-content: center; text-decoration: none;
+  }
+  .btn-icon.download { background: #e0f2fe; }
+
+  .pagination-modern { background: white; padding: 6px; border-radius: 50px; display: flex; align-items: center; gap: 10px; }
+  .page-link-custom { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border-radius: 50%; text-decoration: none; color: #555; font-weight: bold; }
+  .page-current { font-weight: 800; color: var(--primary-blue); min-width: 40px; text-align: center;}
+
+  @media (max-width: 768px) {
+    .table-responsive { font-size: 11px; }
+    .px-4 { padding-left: 10px !important; padding-right: 10px !important; }
+  }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const tbody = document.getElementById("examenesBody");
+    const counterInfo = document.getElementById("counterInfo");
+    const rowsPerPage = 6;
+    let currentPage = 1;
+
+    function normalize(str) {
+        return (str || "").toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+    }
+
+    function renderTable() {
+        const query = normalize(searchInput.value);
+        const allRows = Array.from(tbody.querySelectorAll('tr[data-row="examen"]'));
+        const filtered = allRows.filter(row => normalize(row.innerText).includes(query));
+
+        allRows.forEach(r => r.style.display = "none");
+
+        const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * rowsPerPage;
+        filtered.slice(start, start + rowsPerPage).forEach(r => r.style.display = "");
+
+        document.getElementById("pageInfo").textContent = `${currentPage} / ${totalPages}`;
+        counterInfo.textContent = `📋 ${filtered.length} Resultados`;
+    }
+
+    searchInput.addEventListener("input", () => { currentPage = 1; renderTable(); });
+    document.getElementById("prevPage").addEventListener("click", e => { 
+        e.preventDefault(); 
+        if (currentPage > 1) { currentPage--; renderTable(); } 
+    });
+    document.getElementById("nextPage").addEventListener("click", e => {  
+        e.preventDefault();  
+        const total = Math.ceil(tbody.querySelectorAll('tr[data-row="examen"]').length / rowsPerPage); 
+        if (currentPage < total) { currentPage++; renderTable(); }  
+    });
+
+    renderTable();
+
+    const $form = $("#uploadForm");
+    if ($form.length) {
+        $form.on("submit", function(e) {
+            e.preventDefault();
+        });
+    }
+});
+</script>
+{% endblock %}

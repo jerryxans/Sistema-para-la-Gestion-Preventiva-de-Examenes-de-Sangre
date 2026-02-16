@@ -1,0 +1,251 @@
+{% extends "examenes/base.html" %}
+{% block title %}Análisis Clínico Avanzado{% endblock %}
+
+{% block content %}
+<div class="medical-bg min-vh-100">
+  <section class="gradient-animated text-white text-center py-5 shadow-sm">
+    <div class="header-content container">
+      
+      <h2 class="fw-bold fs-2 brand-animated mb-1">📊 VISUALIZACIÓN DE GRÁFICAS</h2>
+      <p class="mb-0 small opacity-75">Visualización de evolución clínica y rangos de referencia</p>
+    </div>
+  </section>
+
+  <div class="container py-4">
+    <div class="row g-4" id="charts-container">
+      </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.0.1"></script>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --medical-green: #198754;
+    --medical-red: #dc3545;
+    --medical-cyan: #0dcaf0;
+    --glass-bg: rgba(255, 255, 255, 0.98);
+  }
+
+  .medical-bg {
+    background-color: #f0f4f8;
+    background-image: radial-gradient(#d1e1ff 0.8px, transparent 0.8px);
+    background-size: 20px 20px;
+  }
+
+  .chart-card-premium {
+    position: relative;
+    border-radius: 30px;
+    background: white;
+    padding: 3px;
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .chart-card-premium:hover {
+    transform: translateY(-8px);
+  }
+
+  .chart-card-premium::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent 30%, var(--primary-blue), transparent 70%);
+    animation: rotateBorder 8s linear infinite;
+    z-index: 0;
+  }
+
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+
+  .inner-content {
+    position: relative;
+    z-index: 1;
+    background: white;
+    border-radius: 27px;
+    padding: 1.8rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stats-pill-group {
+    background: #f8f9fa;
+    padding: 5px 12px;
+    border-radius: 50px;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+  .canvas-wrapper {
+    position: relative;
+    height: 280px;
+    width: 100%;
+    margin: 15px 0;
+  }
+
+  .unit-badge {
+    background: #eef2f7;
+    color: #4a5568;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 800;
+  }
+</style>
+
+<script>
+  Chart.register(ChartDataLabels);
+
+  const rawData = '{{ data_json|escapejs }}';
+  let chartData = {};
+  try { chartData = JSON.parse(rawData); } catch (e) { console.error("Data error", e); }
+
+  const container = document.getElementById("charts-container");
+
+  Object.entries(chartData).forEach(([nombre, valores], index) => {
+    if (!valores.labels || !valores.values.length) return;
+
+    const col = document.createElement("div");
+    col.className = "col-12 col-lg-6";
+
+    const firstPoint = valores.values[0];
+    const rMin = parseFloat(firstPoint.rango_min);
+    const rMax = parseFloat(firstPoint.rango_max);
+
+    let b = 0, n = 0, a = 0;
+    const valuesArr = valores.values.map(p => {
+      const v = parseFloat(p.valor);
+      if (v < rMin) b++; else if (v > rMax) a++; else n++;
+      return v;
+    });
+
+    col.innerHTML = `
+      <div class="chart-card-premium shadow-lg">
+        <div class="inner-content">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <h5 class="fw-bold text-dark mb-0">${nombre}</h5>
+              <span class="unit-badge">${valores.unidad_medida || 'S/U'}</span>
+            </div>
+            <div class="stats-pill-group border">
+              <small class="fw-bold text-info"><span class="dot bg-info"></span> ${b}</small>
+              <small class="fw-bold text-success"><span class="dot bg-success"></span> ${n}</small>
+              <small class="fw-bold text-danger"><span class="dot bg-danger"></span> ${a}</small>
+            </div>
+          </div>
+          
+          <div class="canvas-wrapper">
+            <canvas id="chart_${index}"></canvas>
+          </div>
+
+          <div class="row g-0 mt-3 pt-3 border-top text-center">
+            <div class="col-4 border-end">
+              <small class="d-block text-muted tiny">MÍNIMO</small>
+              <span class="fw-bold text-dark">${rMin}</span>
+            </div>
+            <div class="col-4 border-end">
+              <small class="d-block text-muted tiny">MÁXIMO</small>
+              <span class="fw-bold text-dark">${rMax}</span>
+            </div>
+            <div class="col-4">
+              <small class="d-block text-muted tiny">ESTADO</small>
+              <span class="badge ${a > 0 ? 'bg-danger' : (b > 0 ? 'bg-info' : 'bg-success')} rounded-pill" style="font-size:0.6rem">
+                ${a > 0 ? 'REVISIÓN' : 'ESTABLE'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(col);
+
+    const ctx = document.getElementById(`chart_${index}`).getContext('2d');
+    const fillGradient = ctx.createLinearGradient(0, 0, 0, 250);
+    fillGradient.addColorStop(0, 'rgba(0, 123, 255, 0.15)');
+    fillGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: valores.labels,
+        datasets: [{
+          data: valuesArr,
+          borderColor: '#007bff',
+          borderWidth: 3,
+          backgroundColor: fillGradient,
+          fill: true,
+          tension: 0.45,
+          pointBackgroundColor: valores.values.map(p => {
+             const v = parseFloat(p.valor);
+             return v < rMin ? '#0dcaf0' : (v > rMax ? '#dc3545' : '#198754');
+          }),
+          pointRadius: 6,
+          pointHoverRadius: 9,
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { intersect: false, mode: 'index' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            padding: 12,
+            backgroundColor: 'rgba(255,255,255,0.95)',
+            titleColor: '#000',
+            bodyColor: '#666',
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            displayColors: false,
+            bodyFont: { weight: 'bold' }
+          },
+          datalabels: {
+            display: (context) => context.dataset.data[context.dataIndex] > 0,
+            align: 'top',
+            font: { size: 10, weight: 'bold' },
+            color: '#444'
+          },
+          annotation: {
+            annotations: {
+              boxNormal: {
+                type: 'box',
+                yMin: rMin,
+                yMax: rMax,
+                backgroundColor: 'rgba(25, 135, 84, 0.04)',
+                borderWidth: 0,
+              },
+              lineMin: {
+                type: 'line', yMin: rMin, yMax: rMin,
+                borderColor: 'rgba(13, 202, 240, 0.3)', borderWidth: 1.5, borderDash: [6, 4]
+              },
+              lineMax: {
+                type: 'line', yMin: rMax, yMax: rMax,
+                borderColor: 'rgba(220, 53, 69, 0.3)', borderWidth: 1.5, borderDash: [6, 4]
+              }
+            }
+          }
+        },
+        scales: {
+          y: { 
+            beginAtZero: false,
+            grid: { color: '#f1f5f9' },
+            ticks: { font: { size: 10, weight: '600' } }
+          },
+          x: { 
+            grid: { display: false },
+            ticks: { font: { size: 10, weight: '600' } }
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

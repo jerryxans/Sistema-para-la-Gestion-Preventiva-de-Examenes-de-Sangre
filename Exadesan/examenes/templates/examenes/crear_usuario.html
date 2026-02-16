@@ -1,0 +1,197 @@
+{% extends "examenes/base.html" %}
+{% block title %}Crear Usuario{% endblock %}
+
+{% block content %}
+<div class="main-bg-coverage">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-4 shadow-sm">
+      <h2 class="fw-bold fs-4 brand-animated">➕ CREAR USUARIO</h2>
+      <p class="mb-0 small opacity-75">Registra un nuevo usuario en el sistema</p>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-4">
+      <div class="container px-3" style="max-width: 500px;">
+        
+        <div class="card glass-card shadow-lg border-0 w-100">
+          <div class="card-body p-4">
+            <form id="crearUsuarioForm" method="post" class="needs-validation" novalidate>
+              {% csrf_token %}
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="id_username" class="form-label small fw-bold text-secondary">👤 Nombre de usuario</label>
+                  <input type="text" name="username" id="id_username" 
+                         class="form-control rounded-pill border-light-subtle shadow-sm px-3" required>
+                  <div class="invalid-feedback small px-2">Este campo es obligatorio.</div>
+                </div>
+
+                <div class="col-12">
+                  <label for="id_email" class="form-label small fw-bold text-secondary">📧 Correo electrónico</label>
+                  <input type="email" name="email" id="id_email" 
+                         class="form-control rounded-pill border-light-subtle shadow-sm px-3" required>
+                  <div class="invalid-feedback small px-2">Ingrese un correo válido.</div>
+                </div>
+
+                <div class="col-12">
+                  <label for="id_telefono" class="form-label small fw-bold text-secondary">📞 Teléfono (Opcional)</label>
+                  <input type="text" name="telefono" id="id_telefono" 
+                         class="form-control rounded-pill border-light-subtle shadow-sm px-3">
+                </div>
+
+                <div class="col-12">
+                  <label for="id_rol" class="form-label small fw-bold text-secondary">🎭 Rol de Usuario</label>
+                  <select name="rol" id="id_rol" class="form-select rounded-pill border-light-subtle shadow-sm px-3" required>
+                    <option value="" selected disabled>Seleccione un rol...</option>
+                    <option value="ADMIN">Administrador</option>
+                    <option value="MEDICO">Médico</option>
+                    <option value="PACIENTE">Paciente</option>
+                  </select>
+                  <div class="invalid-feedback small px-2">Debe seleccionar un rol.</div>
+                </div>
+
+                <div class="col-12 mb-2">
+                  <label for="id_password" class="form-label small fw-bold text-secondary">🔑 Contraseña</label>
+                  <input type="password" name="password" id="id_password" 
+                         class="form-control rounded-pill border-light-subtle shadow-sm px-3" required>
+                  <div class="invalid-feedback small px-2">La contraseña es obligatoria.</div>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary rounded-pill fw-bold py-2 shadow-sm">
+                  💾 Guardar Nuevo Usuario
+                </button>
+                <a href="{% url 'examenes:lista_usuarios' %}" class="btn btn-glass-outline rounded-pill fw-bold py-2">
+                  Cancelar
+                </a>
+              </div>
+            </form>
+          </div>
+        </div> 
+        
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+      <div class="modal-body text-center p-5">
+        <div id="modalIcon" class="mb-3 fs-1"></div>
+        <h4 id="modalTitle" class="fw-bold"></h4>
+        <p id="modalMessage" class="text-muted"></p>
+        <button type="button" class="btn btn-primary w-100 rounded-pill py-2" data-bs-dismiss="modal">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #007bff, #00d4ff);
+    --accent-gradient: linear-gradient(90deg, #007bff, #6610f2, #00d4ff);
+    --bg-light: #f8fbff;
+    --card-radius: 18px;
+  }
+
+  html, body { margin: 0; padding: 0; height: 100%; background-color: var(--bg-light) !important; }
+  .main-bg-coverage { background-color: var(--bg-light); min-height: 100vh; width: 100%; }
+
+  .gradient-animated { background: var(--accent-gradient); background-size: 200% auto; animation: shine 5s linear infinite; }
+  @keyframes shine { to { background-position: 200% center; } }
+
+  .glass-card { background: white !important; border-radius: var(--card-radius); position: relative; padding: 3px; z-index: 1; overflow: hidden; }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: conic-gradient(transparent, transparent, transparent, #007bff);
+    animation: rotateBorder 6s linear infinite; z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: calc(var(--card-radius) - 3px); }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.1);
+  }
+
+  .btn-primary { background: var(--primary-gradient); border: none; transition: 0.3s; }
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  
+  .btn-glass-outline { border: 2px solid #dee2e6; color: #6c757d !important; background: transparent; transition: 0.3s; }
+  .btn-glass-outline:hover { background: #f8f9fa; border-color: #ced4da; color: #333 !important; }
+
+  @media (max-width: 576px) {
+    .flex-grow-1 { align-items: flex-start !important; padding-top: 20px !important; }
+    .card-body { padding: 1.5rem !important; }
+  }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(function () {
+  'use strict';
+  
+  const forms = document.querySelectorAll('.needs-validation');
+  const feedbackModal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+
+  function showFeedback(success, title, message, redirect = false) {
+    document.getElementById('modalIcon').innerText = success ? "✅" : "❌";
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalMessage').innerText = message;
+    
+    if(redirect) {
+        document.getElementById('feedbackModal').addEventListener('hidden.bs.modal', function () {
+            window.location.href = "/examenes/usuarios/";
+        }, { once: true });
+    }
+    feedbackModal.show();
+  }
+
+  Array.from(forms).forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        event.preventDefault();
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        $.ajax({
+          url: "/examenes/usuarios/ajax/crear/",
+          type: "POST",
+          data: $(form).serialize(),
+          headers: { "X-CSRFToken": csrftoken },
+          success: function(data) {
+            if (data.error) {
+              showFeedback(false, "Error", data.error);
+              return;
+            }
+
+            if (typeof agregarUsuarioFila === "function") { agregarUsuarioFila(data); }
+            if (data.perfil__rol === "PACIENTE" && typeof agregarPacienteFila === "function") { agregarPacienteFila(data); }
+
+            showFeedback(true, "Completado", "Usuario " + data.username + " creado correctamente", true);
+          },
+          error: function(xhr) {
+            let errorMsg = "Error inesperado";
+            try {
+              const response = JSON.parse(xhr.responseText);
+              errorMsg = response.error || xhr.responseText;
+            } catch (e) {
+              errorMsg = xhr.responseText;
+            }
+            showFeedback(false, "Error de Sistema", errorMsg);
+          }
+        });
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+})();
+</script>
+{% endblock %}

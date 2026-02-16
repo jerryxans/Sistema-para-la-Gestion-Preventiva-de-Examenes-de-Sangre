@@ -1,0 +1,372 @@
+{% extends "examenes/base.html" %}
+
+{% block title %}Bienvenido | Sistema Clínico {% endblock %}
+
+{% block content %}
+<div class="medical-bg min-vh-100">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="hero-premium-v2 d-flex align-items-center justify-content-center">
+      <div class="container text-center py-5 position-relative" style="z-index: 2;">
+        <div class="hero-badge-v2 mb-4 mx-auto animate-fadeIn">
+          <span class="badge-dot-v2"></span>
+          <span class="badge-text">SISTEMA WEB DE GESTION PREVENTIVA DE EXAMENES DE SANGRE</span>
+        </div>
+        
+        <h1 class="display-2 fw-800 text-white mb-3 brand-animated">
+          Tecnología que cuida <br><span class="text-highlight-v2">cada latido.</span>
+        </h1>
+        
+        <p class="lead text-white opacity-90 mb-5 mx-auto hero-description">
+          Transformamos la complejidad clínica en claridad visual. Gestión inteligente con seguridad de grado médico.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="{% url 'examenes:redirect_dashboard' %}" class="btn-hero-v2 primary shadow-lg">
+            🚀 Acceder al Sistema
+          </a>
+          <a href="#roles" class="btn-hero-v2 outline">
+            Explorar Roles
+          </a>
+        </div>
+      </div>
+      
+      <div class="hero-wave-container">
+        <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
+          <defs><path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" /></defs>
+          <g class="wave-parallax">
+            <use href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.1" />
+            <use href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.15)" />
+          </g>
+        </svg>
+      </div>
+    </section>
+    {% load static %}
+
+    <section id="roles" class="py-5 flex-grow-1 d-flex align-items-center">
+      <div class="container py-4">
+        <div class="text-center mb-5">
+          <h6 class="text-primary fw-bold text-uppercase ls-2 mb-2">Perfiles de Acceso</h6>
+          <h2 class="display-6 fw-bold text-dark">Ecosistema Colaborativo</h2>
+        </div>
+        
+        <div class="row g-4 justify-content-center admin-vertical-stack">
+          
+          <div class="col-12 col-md-4">
+            <div class="role-card-v2">
+              <div class="card-border-anim"></div>
+              <div class="role-card-inner">
+                <div class="role-img-container">
+                    <img src="{% static 'img/admin.jpeg' %}" alt="Administrador">
+                </div>
+                <h4 class="fw-bold">Administrador</h4>
+                <p class="text-muted small mb-0">
+                  Gestión de infraestructura, control de usuarios y auditoría de seguridad integral.
+                </p>
+              </div>
+            </div>
+          </div>
+        
+          <div class="col-12 col-md-4">
+            <div class="role-card-v2">
+              <div class="card-border-anim"></div> 
+              <div class="role-card-inner">
+                <div class="role-img-container">
+                    <img src="{% static 'img/cuerpomedico.jpeg' %}" alt="Cuerpo Médico">
+                </div>
+                <h4 class="fw-bold">Cuerpo Médico</h4>
+                <p class="text-muted small mb-0">
+                  Carga de analíticas masivas y monitoreo de gráficas en tiempo real.
+                </p>
+              </div>
+            </div>
+          </div>
+        
+          <div class="col-12 col-md-4">
+            <div class="role-card-v2">
+              <div class="card-border-anim"></div> 
+              <div class="role-card-inner">
+                <div class="role-img-container">
+                    <img src="{% static 'img/pacientes.jpeg' %}" alt="Paciente">
+                </div>
+                <h4 class="fw-bold">Paciente</h4>
+                <p class="text-muted small mb-0">
+                  Consulta segura de historial médico, descarga de resultados y seguimiento de salud.
+                </p>
+              </div>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    </section>
+    <section class="py-5 bg-white border-top">
+      <div class="container py-4">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-5">
+            <h3 class="fw-bold mb-4 display-6">Claridad que genera <span class="text-primary">confianza.</span></h3>
+            
+            <div class="feature-item-v2 mb-4">
+              <div class="feature-check">✓</div>
+              <div class="feature-text">
+                <h6 class="fw-bold mb-0">Seguridad Grado Médico</h6>
+                <p class="small text-muted mb-0">Encriptación AES-256 para cada registro clínico.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-v2 mb-4">
+              <div class="feature-check">✓</div>
+              <div class="feature-text">
+                <h6 class="fw-bold mb-0">Interfaz Inteligente</h6>
+                <p class="small text-muted mb-0">Diseño centrado en el usuario, adaptable a cualquier dispositivo.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="mockup-container shadow-2xl" style="border-radius: 20px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1);">
+              
+              <div class="mockup-header" style="background: #e0e0e0; padding: 12px 20px; display: flex; gap: 8px;">
+                <span class="mockup-dot red" style="width: 12px; height: 12px; background: #ff5f56; border-radius: 50%; display: inline-block;"></span>
+                <span class="mockup-dot yellow" style="width: 12px; height: 12px; background: #ffbd2e; border-radius: 50%; display: inline-block;"></span>
+                <span class="mockup-dot green" style="width: 12px; height: 12px; background: #27c93f; border-radius: 50%; display: inline-block;"></span>
+              </div>
+          
+              <div class="mockup-body" style="line-height: 0; background: white;">
+                <img src="{% static 'img/interfaz.jpeg' %}" 
+                     alt="Interfaz del Sistema" 
+                     style="width: 100%; height: auto; display: block; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+              </div>
+          
+            </div>
+          </div>
+          
+    </section>
+  </main>
+</div>
+
+<style>
+  :root {
+    --p-blue: #0061ff;
+    --p-cyan: #60efff;
+    --medical-bg:rgb(212, 212, 212) ;
+    --fw-800: 800;
+  }
+
+
+
+  .medical-bg { background-color: var(--medical-bg); background-image: radial-gradient(#d1e1ff 0.8px, transparent 0.8px); background-size: 24px 24px; }
+  .fw-800 { font-weight: var(--fw-800); }
+  .ls-2 { letter-spacing: 2px; }
+
+  .hero-premium-v2 {
+    min-height: 80vh;
+    background: linear-gradient(135deg, #0052d4 0%, #0061ff 100%);
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+    padding-bottom: 50px;
+  }
+
+  .hero-badge-v2 {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 24px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .badge-dot-v2 { width: 10px; height: 10px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 10px #00ff88; animation: blink 2s infinite; }
+  .text-highlight-v2 { color: #00ffa3; text-shadow: 0 0 25px rgba(0,255,163,0.5); }
+  .hero-description { max-width: 600px; font-size: 1.15rem; }
+
+  .btn-hero-v2 {
+    padding: 14px 40px; border-radius: 50px; font-weight: 800;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-decoration: none; border: 2px solid transparent;
+  }
+  .btn-hero-v2.primary { background: white; color: var(--p-blue); }
+  .btn-hero-v2.outline { border-color: rgba(255,255,255,0.4); color: white; }
+  .btn-hero-v2:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+
+  .role-card-v2 {
+    background: white;
+    border-radius: 30px;
+    padding: 2px;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    transition: 0.3s;
+  }
+  
+  /* esto es para el contenido dentri de las cartas */
+  
+  .role-card-inner {
+    background: white;
+    border-radius: 28px;
+    padding: 40px 30px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    height: 100%;
+  }
+  
+  .role-icon-v2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+  
+  /*  Efecto de las carts */
+  .role-card-v2 .card-border-anim {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent 20%, var(--p-blue), transparent 80%);
+    animation: rotate 4s linear infinite;
+    z-index: 1;
+  }
+
+  @keyframes rotate {
+    100% { transform: rotate(360deg); }
+  }
+
+  /*  hover de las cartes  */
+.role-card-v2:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+}
+
+/* Intensificar el borde */
+.role-card-v2:hover .card-border-anim {
+  opacity: 1;
+  animation-duration: 2s; /* acelera la rotación */
+}
+
+
+.role-card-v2 {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.role-card-v2 .card-border-anim {
+  opacity: 0.5;
+  transition: opacity 0.3s ease, animation-duration 0.3s ease;
+}
+
+.role-img-container {
+    width: 100%;
+    height: 160px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #f8fbff;
+}
+
+.role-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.role-card-v2:hover .role-img-container img {
+    transform: scale(1.1);
+}
+
+@media (min-width: 992px) {
+    #roles .row {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+        gap: 25px !important;
+    }
+    
+    #roles .col-md-4 {
+        flex: 1 1 350px !important;
+        max-width: 400px !important;
+    }
+}
+
+.mockup-container {
+    background: #f0f0f0;            
+    border: 1px solid rgba(255, 255, 255, 0.2);     
+    border-radius: 20px;
+    overflow: hidden;
+    width: 75%;
+    max-width: 480px;
+    margin: 0 auto;
+    
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.5s ease;
+}
+
+.mockup-body img { 
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    object-fit: contain;
+}
+
+.mockup-header {
+    background: #eceff3;            
+    padding: 8px 12px;
+    display: flex;
+    gap: 5px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+
+
+/* ESPACIADO PARA SCROLL MÓVIL */
+@media (max-width: 768px) {
+    .role-card-v2 {
+        margin-bottom: 30px;
+    }
+    #roles {
+        padding-bottom: 100px !important;
+    }
+}
+
+
+  .feature-item-v2 { display: flex; gap: 15px; align-items: center; }
+  .feature-check {
+    width: 28px; height: 28px; background: #e7f0ff; color: var(--p-blue);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.8rem; flex-shrink: 0;
+  }
+
+  .mockup-container {
+    background: #f0f0f0;            
+    border: 1px solid #e0e0e0;     
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .mockup-header {
+    background: #eceff3;            
+    padding: 10px 15px;
+    display: flex;
+    gap: 6px;
+  }
+  
+  .mockup-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  
+  .red { background: #ff5f56; }
+  .yellow { background: #ffbd2e; }
+  .green { background: #27c93f; }
+  
+</style>
+{% endblock %}

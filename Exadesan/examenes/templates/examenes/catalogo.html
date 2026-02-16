@@ -1,0 +1,246 @@
+{% extends "examenes/base.html" %}
+{% block title %}Catálogo de Exámenes{% endblock %}
+
+{% block content %}
+<div class="medical-bg min-vh-100">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-5 shadow-sm">
+      <div class="header-content">
+        <h2 class="fw-bold fs-3 brand-animated mb-1">📑 CATÁLOGO DE EXÁMENES</h2>
+        <p class="mb-0 small opacity-75 fw-light">Gestión de parámetros y rangos de referencia</p>
+      </div>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-4">
+      <div class="container px-3" style="max-width: 1000px;"> 
+        
+        <div class="row g-3 mb-3 align-items-center">
+          <div class="col-12 col-md-7">
+            <div class="search-wrapper">
+              <span class="search-icon">🔍</span>
+              <input id="searchInput" type="text" class="form-control-custom shadow-sm" 
+                     placeholder="Buscar por nombre o código de referencia...">
+            </div>
+          </div>
+          <div class="col-12 col-md-5 text-md-end">
+            <!-- Nuevo Examen -->
+            <a href="{% url 'examenes:catalogo_crear' %}" class="btn btn-submit shadow-blue w-100 w-md-auto px-4">
+              ➕ Nuevo Examen
+            </a>
+          </div>
+        </div>
+
+        <div class="card glass-card shadow-lg border-0">
+          <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 550px;">
+              <table class="table table-hover align-middle mb-0" id="catalogoTable">
+                <thead>
+                  <tr>
+                    <th class="px-4">Examen</th>
+                    <th class="text-center">Rangos de Referencia</th>
+                    <th class="text-center">Código</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="catalogoBody">
+                  {% for examen in catalogo %}
+                  <tr data-row="examen">
+                    <td class="px-4">
+                      <div class="fw-bold text-dark mb-0">{{ examen.nombre }}</div>
+                      <span class="badge-unit">{{ examen.unidad_medida }}</span>
+                    </td>
+                    <td class="text-center">
+                      <div class="d-flex justify-content-center align-items-center gap-2">
+                        <span class="range-tag min" title="Mínimo">{{ examen.rango_min }}</span>
+                        <span class="text-muted small">→</span>
+                        <span class="range-tag max" title="Máximo">{{ examen.rango_max }}</span>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <code class="ref-code shadow-sm">{{ examen.codigo_referencia }}</code>
+                    </td>
+                    <td class="px-4">
+                      <div class="d-flex justify-content-center gap-2">
+                        <!-- Editar -->
+                        <a href="{% url 'examenes:catalogo_editar' examen.id %}" 
+                           class="btn-action shadow-sm" title="Editar">✏️</a>
+                        
+                        <!-- Eliminar -->
+                        <button type="button" class="btn-action btn-action-danger shadow-sm" 
+                                data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ examen.id }}">
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  <tr id="emptyRow" style="display:none;">
+                    <td colspan="4" class="text-center text-muted py-5">No se encontraron exámenes.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-column align-items-center mt-4 pb-4">
+            <span id="counterInfo" class="text-primary small fw-bold mb-2"></span>
+            <nav class="pagination-modern shadow-sm">
+              <button class="page-btn" id="prevPage">⬅️</button>
+              <span class="page-current" id="pageInfo">Página 1</span>
+              <button class="page-btn" id="nextPage">➡️</button>
+            </nav>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+{% for examen in catalogo %}
+<div class="modal fade" id="confirmDeleteModal{{ examen.id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 24px;">
+      <div class="modal-body p-4 text-center">
+        <div class="text-danger mb-3" style="font-size: 3rem;">⚠️</div>
+        <h4 class="fw-bold">¿Eliminar Examen?</h4>
+        <p class="text-secondary">Estás por eliminar <strong>{{ examen.nombre }}</strong>. Esta acción no se puede deshacer.</p>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-center mt-4">
+          <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
+          <!-- Eliminar -->
+          <form action="{% url 'examenes:catalogo_eliminar' examen.id %}" method="post" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Confirmar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --deep-blue: #0056b3;
+    --soft-bg: rgb(212, 212, 212);
+    --glass-white: rgba(255, 255, 255, 0.98);
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+  .medical-bg {
+    background-color: var(--soft-bg);
+    background-image: radial-gradient(#d1e1ff 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
+
+  .gradient-animated {
+    background: linear-gradient(-45deg, #007bff, #6610f2, #00d4ff);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+  }
+  @keyframes gradientFlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+  .glass-card {
+    background: var(--glass-white) !important;
+    border-radius: 24px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: 22px; }
+
+  thead th {
+    background: #f8fbff !important;
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 1px; color: #888; padding: 15px;
+    border-bottom: 2px solid #f0f4f8;
+  }
+  .badge-unit { font-size: 0.7rem; background: #e9ecef; color: #495057; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+  .range-tag { font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+  .range-tag.min { background: #fff4e5; color: #b95000; }
+  .range-tag.max { background: #e3f2fd; color: #007bff; }
+  .ref-code { background: #f1f3f5; color: #343a40; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; font-family: monospace; }
+
+  .search-wrapper { position: relative; }
+  .search-icon { position: absolute; left: 15px; top: 12px; opacity: 0.5; }
+  .form-control-custom {
+    width: 100%; padding: 12px 12px 12px 45px;
+    border-radius: 14px; border: 1px solid #e0e0e0;
+    font-size: 0.9rem; transition: 0.3s; background: white;
+  }
+  .form-control-custom:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(0,123,255,0.1); outline: none; }
+
+  .btn-action {
+    width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+    background: white; border: 1px solid #eee; border-radius: 12px;
+    text-decoration: none; transition: 0.2s;
+  }
+  .btn-action:hover { transform: translateY(-2px); border-color: var(--primary-blue); }
+  .btn-action-danger:hover { border-color: #dc3545; background: #fff5f5; }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+    color: white; border: none; padding: 12px 24px; border-radius: 14px;
+    font-weight: 700; transition: 0.3s;
+  }
+
+  .pagination-modern {
+    background: white; padding: 8px 15px; border-radius: 50px;
+    display: flex; align-items: center; gap: 15px;
+  }
+  .page-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+  .page-current { font-size: 0.85rem; font-weight: 700; color: #555; }
+
+  @media (max-width: 576px) {
+    .container { max-width: 100% !important; }
+    .header-content h2 { font-size: 1.5rem; }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const tbody = document.getElementById("catalogoBody");
+    const emptyRow = document.getElementById("emptyRow");
+    const rowsPerPage = 6;
+    let currentPage = 1;
+
+    function renderTable() {
+      const q = searchInput.value.toLowerCase().trim();
+      const allRows = Array.from(tbody.querySelectorAll('tr[data-row="examen"]'));
+      const filtered = allRows.filter(row => row.innerText.toLowerCase().includes(q));
+
+      allRows.forEach(r => r.style.display = "none");
+      const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
+      currentPage = Math.min(currentPage, totalPages);
+      
+      const start = (currentPage - 1) * rowsPerPage;
+      filtered.slice(start, start + rowsPerPage).forEach(r => r.style.display = "");
+      
+      emptyRow.style.display = (filtered.length === 0) ? "" : "none";
+      document.getElementById("pageInfo").textContent = `Página ${currentPage} de ${totalPages}`;
+      document.getElementById("counterInfo").textContent = `${filtered.length} exámenes encontrados`;
+    }
+
+    searchInput.addEventListener("input", () => { currentPage = 1; renderTable(); });
+    document.getElementById("prevPage").addEventListener("click", () => { if(currentPage > 1) { currentPage--; renderTable(); }});
+    document.getElementById("nextPage").addEventListener("click", () => {
+      const filteredCount = Array.from(tbody.querySelectorAll('tr[data-row="examen"]')).filter(r => r.innerText.toLowerCase().includes(searchInput.value.toLowerCase())).length;
+      if(currentPage < Math.ceil(filteredCount / rowsPerPage)) { currentPage++; renderTable(); }
+    });
+
+    renderTable();
+  });
+</script>
+{% endblock %}

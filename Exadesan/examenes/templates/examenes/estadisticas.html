@@ -1,0 +1,212 @@
+{% extends "examenes/base.html" %}
+
+{% block title %}Estadísticas Clínicas{% endblock %}
+
+{% block content %}
+<div class="medical-bg min-vh-100">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-5 shadow-sm">
+      <div class="header-content container">
+        <h2 class="fw-bold fs-3 brand-animated mb-1">📊 PANEL DE ESTADÍSTICAS</h2>
+        <p class="mb-0 small opacity-75 fw-light">Análisis inteligente de volúmenes y niveles de riesgo</p>
+      </div>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+      <div class="container px-3" style="max-width: 1100px;">
+        
+        <div class="row g-3 mb-4 justify-content-center">
+          
+          <div class="col-6 col-md-3">
+            <div class="stat-glass-card border-primary h-100">
+              <div class="inner-stat">
+                <span class="stat-icon bg-soft-blue">🧾</span>
+                <div class="stat-info">
+                  <h6 class="text-muted tiny fw-bold mb-0">TOTAL</h6>
+                  <div class="display-6 fw-bold text-dark">{{ estadisticas.total_resultados|default:0 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-glass-card border-danger h-100">
+              <div class="inner-stat">
+                <span class="stat-icon bg-soft-red">⚠️</span>
+                <div class="stat-info">
+                  <h6 class="text-danger tiny fw-bold mb-0">ALTO</h6>
+                  <div class="display-6 fw-bold text-danger">{{ estadisticas.riesgo_alto|default:0 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-glass-card border-success h-100">
+              <div class="inner-stat">
+                <span class="stat-icon bg-soft-green">✅</span>
+                <div class="stat-info">
+                  <h6 class="text-success tiny fw-bold mb-0">NORMAL</h6>
+                  <div class="display-6 fw-bold text-success">{{ estadisticas.riesgo_normal|default:0 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-glass-card border-info h-100">
+              <div class="inner-stat">
+                <span class="stat-icon bg-soft-cyan">🟡</span>
+                <div class="stat-info">
+                  <h6 class="text-info tiny fw-bold mb-0">BAJO</h6>
+                  <div class="display-6 fw-bold text-info">{{ estadisticas.riesgo_bajo|default:0 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card glass-card shadow-lg border-0 mx-auto" style="max-width: 850px;">
+          <div class="card-body p-4 p-md-5">
+            <h5 class="fw-bold text-center text-dark mb-4">Distribución Porcentual de Riesgos</h5>
+            
+            <div class="row align-items-center">
+              <div class="col-md-7">
+                <div class="chart-container-canvas">
+                  <canvas id="riesgoChart"></canvas>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div id="chartLegend" class="d-flex flex-column gap-3 mt-4 mt-md-0">
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --soft-bg: #f8fbff;
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+  .medical-bg {
+    background-color: var(--soft-bg);
+    background-image: radial-gradient(#d1e1ff 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
+
+  .gradient-animated {
+    background: linear-gradient(-45deg, #007bff, #20c997, #6610f2);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+  }
+  @keyframes gradientFlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+  .glass-card {
+    background: white !important;
+    border-radius: 24px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: 22px; }
+
+  .stat-glass-card {
+    background: white; border-radius: 20px; padding: 1.2rem;
+    border-bottom: 4px solid transparent; transition: 0.3s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+  }
+  .stat-glass-card.border-primary { border-color: var(--primary-blue); }
+  .stat-glass-card.border-danger { border-color: #dc3545; }
+  .stat-glass-card.border-success { border-color: #198754; }
+  .stat-glass-card.border-info { border-color: #0dcaf0; }
+
+  .inner-stat { display: flex; align-items: center; gap: 10px; }
+  .stat-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+  }
+  .bg-soft-blue { background: #eef4ff; }
+  .bg-soft-red { background: #fff5f5; }
+  .bg-soft-green { background: #f0fff4; }
+  .bg-soft-cyan { background: #e6fffa; }
+  
+  .tiny { font-size: 0.65rem; letter-spacing: 0.5px; }
+
+  .chart-container-canvas { position: relative; height: 280px; width: 100%; }
+
+  @media (max-width: 768px) {
+    .flex-grow-1 { align-items: flex-start !important; padding-top: 25px !important; }
+    .display-6 { font-size: 1.4rem; }
+    .inner-stat { flex-direction: column; text-align: center; }
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  (function() {
+    const alto = Number('{{ estadisticas.riesgo_alto|default:0 }}');
+    const normal = Number('{{ estadisticas.riesgo_normal|default:0 }}');
+    const bajo = Number('{{ estadisticas.riesgo_bajo|default:0 }}');
+    const total = alto + normal + bajo;
+
+    const ctx = document.getElementById('riesgoChart').getContext('2d');
+    
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Alto', 'Normal', 'Bajo'],
+        datasets: [{
+          data: [alto, normal, bajo],
+          backgroundColor: ['#dc3545', '#198754', '#0dcaf0'],
+          borderWidth: 5,
+          borderColor: '#ffffff',
+          hoverOffset: 15
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    const legendContainer = document.getElementById('chartLegend');
+    const data = [
+        { label: 'Riesgo Crítico', val: alto, col: '#dc3545' },
+        { label: 'Riesgo Estable', val: normal, col: '#198754' },
+        { label: 'Riesgo Mínimo', val: bajo, col: '#0dcaf0' }
+    ];
+    
+    data.forEach(item => {
+      const pct = total ? ((item.val / total) * 100).toFixed(1) : 0;
+      legendContainer.innerHTML += `
+        <div class="p-3 rounded-4 border bg-light-subtle d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <span style="width:12px; height:12px; background:${item.col}; border-radius:50%; display:block;"></span>
+            <span class="small fw-bold text-dark">${item.label}</span>
+          </div>
+          <span class="badge bg-white text-dark border shadow-sm rounded-pill">${pct}%</span>
+        </div>
+      `;
+    });
+  })();
+</script>
+{% endblock %}

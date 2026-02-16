@@ -1,0 +1,201 @@
+{% extends "examenes/base.html" %}
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="main-bg-coverage">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-5 shadow-sm">
+      <div class="header-content">
+        <h2 class="fw-bold fs-3 brand-animated mb-1">⚙️ GESTIÓN DE CUENTA</h2>
+        <p class="mb-0 small opacity-75 fw-light">Modificación de credenciales y perfil de acceso</p>
+      </div>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-4">
+      <div class="container px-3" style="max-width: 550px;">
+        
+        <div class="card glass-card shadow-lg border-0 w-100">
+          <div class="card-body p-4 p-md-5">
+            <form method="post" id="editForm" novalidate>
+              {% csrf_token %}
+
+              <div class="row g-4">
+                <div class="col-12 border-bottom pb-2 mb-2">
+                  <span class="text-primary fw-bold small text-uppercase tracking-wider">🔑 Identidad del Usuario</span>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label-custom">Nombre de usuario</label>
+                  <div class="input-group-modern">
+                    <span class="icon">👤</span>
+                    <input type="text" name="username" value="{{ user_to_edit.username }}" 
+                           class="form-control" required>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label-custom">Correo Electrónico</label>
+                  <div class="input-group-modern">
+                    <span class="icon">📧</span>
+                    <input type="email" name="email" value="{{ user_to_edit.email }}" 
+                           class="form-control" required>
+                  </div>
+                </div>
+
+                <div class="col-12 border-bottom pb-2 mb-2 mt-4">
+                  <span class="text-primary fw-bold small text-uppercase tracking-wider">🛠️ Configuración de Acceso</span>
+                </div>
+
+                <div class="col-md-7">
+                  <label class="form-label-custom">Teléfono de Contacto</label>
+                  <div class="input-group-modern">
+                    <span class="icon">📞</span>
+                    <input type="text" name="telefono" value="{{ user_to_edit.telefono|default:'' }}" 
+                           class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-md-5">
+                  <label class="form-label-custom">Rol Asignado</label>
+                  <div class="input-group-modern">
+                    <select name="rol" class="form-select" required>
+                      <option value="ADMIN" {% if user_to_edit.rol == 'ADMIN' %}selected{% endif %}>Admin</option>
+                      <option value="MEDICO" {% if user_to_edit.rol == 'MEDICO' %}selected{% endif %}>Médico</option>
+                      <option value="PACIENTE" {% if user_to_edit.rol == 'PACIENTE' %}selected{% endif %}>Paciente</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="alert alert-info border-0 rounded-4 py-3 shadow-sm" style="background: rgba(0, 123, 255, 0.05);">
+                    <small class="text-primary fw-bold d-block mb-1">💡 Nota de Seguridad:</small>
+                    <p class="mb-0 small text-secondary">Para cambiar la contraseña de este usuario, diríjase al módulo de seguridad avanzada.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row g-3 mt-4">
+                <div class="col-md-6 order-2 order-md-1">
+                  <a href="{% url 'examenes:lista_usuarios' %}" class="btn btn-cancel w-100">
+                    Descartar
+                  </a>
+                </div>
+                <div class="col-md-6 order-1 order-md-2">
+                  <button type="submit" class="btn btn-submit w-100 shadow-blue" id="submitBtn">
+                    <span class="btn-text">Actualizar Perfil</span>
+                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div> 
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --deep-blue: #0056b3;
+    --soft-bg: #f0f5ff;
+    --glass-white: rgba(255, 255, 255, 0.98);
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+  .main-bg-coverage { background: var(--soft-bg); min-height: 100vh; }
+
+  .glass-card {
+    background: var(--glass-white) !important;
+    border-radius: 24px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: 22px; }
+
+  .form-label-custom {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 6px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .input-group-modern {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 14px;
+    padding: 2px 12px;
+    transition: all 0.3s ease;
+  }
+  .input-group-modern:focus-within {
+    background: #fff;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+  }
+  
+  .input-group-modern input, 
+  .input-group-modern select {
+    border: none !important;
+    background: transparent !important;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 0.95rem;
+    outline: none !important;
+    color: #333;
+  }
+  .input-group-modern .icon { margin-right: 10px; opacity: 0.6; }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+    color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; transition: 0.3s;
+  }
+  .btn-submit:hover { transform: translateY(-2px); filter: brightness(1.1); }
+  
+  .btn-cancel {
+    background: #fff; border: 2px solid #eee; color: #888; padding: 14px; border-radius: 14px; font-weight: 700; transition: 0.3s;
+  }
+
+  .gradient-animated {
+    background: linear-gradient(-45deg, #007bff, #6610f2, #00d4ff);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+  }
+  @keyframes gradientFlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+  @media (max-width: 576px) {
+    .input-group-modern .icon { display: none; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('editForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    const btnText = submitBtn.querySelector('.btn-text');
+
+    form.addEventListener('submit', function () {
+      submitBtn.disabled = true;
+      btnText.classList.add('d-none');
+      spinner.classList.remove('d-none');
+    });
+  });
+</script>
+{% endblock %}

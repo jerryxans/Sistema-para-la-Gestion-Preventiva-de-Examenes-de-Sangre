@@ -1,0 +1,285 @@
+{% extends "examenes/base.html" %}
+{% block title %}Usuarios del Sistema{% endblock %}
+
+{% block content %}
+<div class="main-bg-coverage">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-5 shadow-sm">
+      <div class="header-content">
+        <h2 class="fw-bold fs-3 brand-animated mb-1">👥 GESTIÓN DE USUARIOS</h2>
+        <p class="mb-0 small opacity-75 fw-light">Administración centralizada del sistema</p>
+      </div>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-4">
+      <div class="container px-3" style="max-width: 900px;"> 
+        
+        <div class="row g-3 mb-3 align-items-center">
+          <div class="col-12 col-md-7">
+            <div class="search-wrapper">
+              <span class="search-icon">🔍</span>
+              <input id="searchInput" type="text" class="form-control-custom" 
+                     placeholder="Buscar por nombre, email o rol...">
+            </div>
+          </div>
+          <div class="col-12 col-md-5 text-md-end">
+            <a href="{% url 'examenes:crear_usuario' %}" class="btn btn-submit shadow-blue w-100 w-md-auto px-4">
+              ➕ Nuevo Usuario
+            </a>
+          </div>
+        </div>
+
+        <div class="card glass-card shadow-lg border-0">
+          <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 500px;">
+              <table class="table table-hover align-middle mb-0" id="usuariosTable">
+                <thead>
+                  <tr>
+                    <th class="px-4">Perfil</th>
+                    <th>Rol</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="usuariosBody">
+                  {% for usuario in usuarios %}
+                  <tr data-row="usuario">
+                    <td class="px-4">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-circle me-3">{{ usuario.username|slice:":1"|upper }}</div>
+                        <div>
+                          <div class="fw-bold text-dark">{{ usuario.username }}</div>
+                          <div class="text-secondary small" style="font-size: 0.75rem;">{{ usuario.email }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      {% if usuario.perfil.rol == 'ADMIN' %}
+                        <span class="badge role-admin">ADMIN</span>
+                      {% elif usuario.perfil.rol == 'MEDICO' %}
+                        <span class="badge role-medico">MÉDICO</span>
+                      {% else %}
+                        <span class="badge role-paciente">PACIENTE</span>
+                      {% endif %}
+                    </td>
+                    <td class="px-4">
+                      <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'examenes:lista_examenes' %}?paciente={{ usuario.id }}" 
+                           class="btn-action shadow-sm" title="Ver Exámenes">🧪</a>
+                        
+                        <a href="{% url 'examenes:editar_usuario' usuario.id %}" 
+                           class="btn-action shadow-sm" title="Editar">✏️</a>
+                        
+                        <a href="{% url 'examenes:eliminar_usuario' usuario.id %}" 
+                           class="btn-action btn-action-danger shadow-sm" title="Eliminar">🗑️</a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center text-muted py-5 fst-italic">No hay usuarios registrados.</td>
+                  </tr>
+                  {% endfor %}
+                  <tr id="emptyRow" style="display:none;">
+                    <td colspan="3" class="text-center text-muted py-5">No se encontraron coincidencias.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-column align-items-center mt-4">
+            <span id="counterInfo" class="text-primary small fw-bold mb-2"></span>
+            <nav class="pagination-modern">
+              <button class="page-btn" id="prevPage">⬅️</button>
+              <span class="page-current" id="pageInfo">Página 1</span>
+              <button class="page-btn" id="nextPage">➡️</button>
+            </nav>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --deep-blue: #0056b3;
+    --soft-bg: #f8fbff;
+    --glass-white: rgba(255, 255, 255, 0.98);
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+  .main-bg-coverage { background: var(--soft-bg); min-height: 100vh; }
+
+  .gradient-animated {
+    background: linear-gradient(-45deg, #007bff, #6610f2, #00d4ff);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+  }
+  @keyframes gradientFlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+  .glass-card {
+    background: var(--glass-white) !important;
+    border-radius: 24px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: 22px; }
+
+  .search-wrapper { position: relative; }
+  .search-icon { position: absolute; left: 15px; top: 12px; opacity: 0.5; }
+  .form-control-custom {
+    width: 100%; padding: 12px 12px 12px 45px;
+    border-radius: 14px; border: 1px solid #e0e0e0;
+    font-size: 0.9rem; transition: 0.3s;
+  }
+  .form-control-custom:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(0,123,255,0.1); outline: none; }
+
+  thead th {
+    background: #f8fbff !important;
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 1px; color: #888; padding: 15px;
+    border-bottom: 2px solid #f0f4f8;
+  }
+  .avatar-circle {
+    width: 38px; height: 38px; background: var(--primary-blue);
+    color: white; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-weight: bold;
+  }
+
+  .btn-action {
+    width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+    background: white; border: 1px solid #eee; border-radius: 12px;
+    text-decoration: none; transition: 0.2s; font-size: 1.1rem;
+  }
+  .btn-action:hover { transform: translateY(-2px); background: #f8fbff; border-color: var(--primary-blue); }
+  .btn-action-danger:hover { border-color: #dc3545; background: #fff5f5; }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+    color: white; border: none; padding: 12px 24px; border-radius: 14px;
+    font-weight: 700; transition: 0.3s;
+  }
+  .btn-submit:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+  .badge { padding: 0.5em 1em; border-radius: 50px; font-weight: 800; font-size: 0.65rem; }
+  .role-admin { background: #ffebee; color: #d32f2f; }
+  .role-medico { background: #e0f2f1; color: #00796b; }
+  .role-paciente { background: #e8eaf6; color: #303f9f; }
+
+  .pagination-modern {
+    background: white; padding: 8px 15px; border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px;
+  }
+  .page-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+  .page-btn:hover { transform: scale(1.2); }
+  .page-current { font-size: 0.85rem; font-weight: 700; color: #555; }
+
+  @media (max-width: 576px) {
+    .container { max-width: 100% !important; }
+    .btn-action { width: 32px; height: 32px; font-size: 1rem; }
+    .avatar-circle { width: 32px; height: 32px; font-size: 0.8rem; }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const tbody = document.getElementById("usuariosBody");
+    const emptyRow = document.getElementById("emptyRow");
+    const rowsPerPage = 5;
+    let currentPage = 1;
+
+    function renderTable() {
+      const q = searchInput.value.toLowerCase().trim();
+      const allRows = Array.from(tbody.querySelectorAll('tr[data-row="usuario"]'));
+      
+      const filtered = allRows.filter(row => {
+        return row.innerText.toLowerCase().includes(q);
+      });
+
+      allRows.forEach(r => r.style.display = "none");
+      
+      const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
+      currentPage = Math.min(currentPage, totalPages);
+      
+      const start = (currentPage - 1) * rowsPerPage;
+      const visibleRows = filtered.slice(start, start + rowsPerPage);
+      
+      visibleRows.forEach(r => r.style.display = "");
+      
+      emptyRow.style.display = (filtered.length === 0) ? "" : "none";
+      
+      document.getElementById("pageInfo").textContent = `Página ${currentPage} de ${totalPages}`;
+      document.getElementById("counterInfo").textContent = `${filtered.length} usuarios encontrados`;
+    }
+
+    searchInput.addEventListener("input", () => {
+      currentPage = 1;
+      renderTable();
+    });
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+      if(currentPage > 1) {
+        currentPage--;
+        renderTable();
+      }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+      const allRows = Array.from(tbody.querySelectorAll('tr[data-row="usuario"]'));
+      const q = searchInput.value.toLowerCase().trim();
+      const filteredCount = allRows.filter(row => row.innerText.toLowerCase().includes(q)).length;
+      
+      if(currentPage < Math.ceil(filteredCount / rowsPerPage)) {
+        currentPage++;
+        renderTable();
+      }
+    });
+
+    // Nueva función para fila vía AJAX
+    window.agregarUsuarioFila = function(data) {
+      const fila = `
+        <tr data-row="usuario">
+          <td class="px-4">
+            <div class="d-flex align-items-center">
+              <div class="avatar-circle me-3">${data.username.charAt(0).toUpperCase()}</div>
+              <div>
+                <div class="fw-bold text-dark">${data.username}</div>
+                <div class="text-secondary small" style="font-size: 0.75rem;">${data.email}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            ${data.perfil__rol === 'ADMIN' ? '<span class="badge role-admin">ADMIN</span>' :
+              data.perfil__rol === 'MEDICO' ? '<span class="badge role-medico">MÉDICO</span>' :
+              '<span class="badge role-paciente">PACIENTE</span>'}
+          </td>
+          <td class="px-4">
+            <div class="d-flex justify-content-center gap-2">
+              <a href="/examenes/lista_examenes?paciente=${data.id}" class="btn-action shadow-sm" title="Ver Exámenes">🧪</a>
+              <a href="/usuarios/${data.id}/editar/" class="btn-action shadow-sm" title="Editar">✏️</a>
+              <a href="/usuario/${data.id}/eliminar/" class="btn-action btn-action-danger shadow-sm" title="Eliminar">🗑️</a>
+            </div>
+          </td>
+        </tr>`;
+      tbody.insertAdjacentHTML("beforeend", fila);
+      renderTable(); // refresca la paginación y búsqueda
+    };
+
+    renderTable();
+  });
+</script>
+{% endblock %}

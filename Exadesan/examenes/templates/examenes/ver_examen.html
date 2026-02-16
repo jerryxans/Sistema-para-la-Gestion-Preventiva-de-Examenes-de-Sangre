@@ -1,0 +1,128 @@
+{% extends "examenes/base.html" %}
+{% block title %}Detalle del Examen{% endblock %}
+
+{% block content %}
+<div class="main-bg-coverage">
+  <main class="d-flex flex-column min-vh-100">
+    
+    <section class="gradient-animated text-white text-center py-4 shadow-sm">
+      <h2 class="fw-bold fs-4 brand-animated">🧾 DETALLE DEL EXAMEN CLÍNICO</h2>
+      <p class="mb-0 small opacity-75">Información validada del resultado médico</p>
+    </section>
+
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center py-4">
+      <div class="container px-3" style="max-width: 550px;">
+        
+        <div class="card glass-card shadow-lg border-0 w-100">
+          <div class="card-body p-4">
+            
+            <div class="text-center mb-4 border-bottom pb-3">
+              <div class="display-6 mb-2">🧪</div>
+              <h5 class="fw-bold text-dark mb-0 text-uppercase" style="letter-spacing: 1px;">
+                {{ examen.examen_tipo.nombre }}
+              </h5>
+            </div>
+
+            <div class="row g-4 mb-4">
+              <div class="col-6">
+                <div class="info-block">
+                  <h6 class="text-muted small text-uppercase fw-bold">👤 Paciente</h6>
+                  <p class="text-dark mb-0 text-truncate">{{ examen.paciente.username }}</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="info-block">
+                  <h6 class="text-muted small text-uppercase fw-bold">📅 Fecha</h6>
+                  <p class="text-dark mb-0">{{ examen.fecha_examen|date:"d/m/Y" }}</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="info-block">
+                  <h6 class="text-muted small text-uppercase fw-bold">📈 Resultado</h6>
+                  <p class="fw-bold text-primary fs-5 mb-0">{{ examen.valor }}</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="info-block">
+                  <h6 class="text-muted small text-uppercase fw-bold">🚨 Riesgo</h6>
+                  {% if examen.nivel_riesgo == "ALTO" %}
+                    <span class="badge riesgo-alto w-100">ALTO</span>
+                  {% elif examen.nivel_riesgo == "NORMAL" %}
+                    <span class="badge riesgo-normal w-100">NORMAL</span>
+                  {% else %}
+                    <span class="badge riesgo-bajo w-100">BAJO</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <hr class="text-light-subtle">
+
+            <div class="mb-2">
+              <h6 class="text-muted small text-uppercase fw-bold mb-2">📝 Recomendaciones</h6>
+              <div class="alert alert-light border-start border-4 border-primary rounded-3 py-3 shadow-sm mb-0">
+                {% if examen.observaciones_medline %}
+                  {{ examen.observaciones_medline|linebreaks }}
+                {% else %}
+                  <span class="text-muted fst-italic small">No hay Recomendaciones adicionales registradas.</span>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if examen.documento_pdf %}
+            <div class="d-grid mt-4">
+              <a href="{{ examen.documento_pdf.url }}" target="_blank" 
+                 class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm py-2">
+                 📄 Descargar Informe (PDF)
+              </a>
+            </div>
+            {% endif %}
+
+          </div>
+        </div> 
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #007bff, #00d4ff);
+    --accent-gradient: linear-gradient(90deg, #007bff, #6610f2, #00d4ff);
+    --bg-light: #f8fbff;
+    --card-radius: 18px;
+  }
+
+  html, body { margin: 0; padding: 0; height: 100%; background-color: var(--bg-light) !important; }
+  .main-bg-coverage { background-color: var(--bg-light); min-height: 100vh; width: 100%; }
+
+  .gradient-animated { background: var(--accent-gradient); background-size: 200% auto; animation: shine 5s linear infinite; }
+  @keyframes shine { to { background-position: 200% center; } }
+
+  .glass-card { background: white !important; border-radius: var(--card-radius); position: relative; padding: 3px; z-index: 1; overflow: hidden; }
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: conic-gradient(transparent, transparent, transparent, #007bff);
+    animation: rotateBorder 6s linear infinite; z-index: -1;
+  }
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+  .glass-card .card-body { background: white; border-radius: calc(var(--card-radius) - 3px); }
+
+  .info-block h6 { font-size: 0.7rem; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .info-block p { font-size: 1rem; font-weight: 600; color: #333; }
+
+  .badge { padding: 0.7em 1em; border-radius: 50px; font-weight: 800; font-size: 10px; text-transform: uppercase; }
+  .riesgo-bajo { background-color: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; }
+  .riesgo-normal { background-color: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
+  .riesgo-alto { background-color: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
+
+  .btn-primary { background: var(--primary-gradient); border: none; font-size: 0.95rem; transition: 0.3s; }
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); }
+
+  @media (max-width: 576px) {
+    .flex-grow-1 { align-items: flex-start !important; padding-top: 20px !important; }
+    .card-body { padding: 1.5rem !important; }
+  }
+</style>
+{% endblock %}

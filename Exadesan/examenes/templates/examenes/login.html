@@ -1,0 +1,190 @@
+{% extends "examenes/base.html" %}
+{% load static %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="medical-bg d-flex align-items-center justify-content-center vh-100 px-3">
+  
+  <div class="login-container w-100" style="max-width: 420px;">
+    
+    <div class="text-center mb-4 fadeInUp">
+      <div class="brand-logo-circle shadow-blue mx-auto mb-3">
+        <span class="fs-2">🏥</span>
+      </div>
+      <h2 class="fw-bold text-dark mb-1">Bienvenido</h2>
+      <p class="text-secondary small opacity-75">Acceso exclusivo para personal autorizado</p>
+    </div>
+
+    <div class="card glass-card shadow-lg border-0 fadeInUp-delayed">
+      <div class="card-body p-4 p-md-5">
+        
+        {% if form.errors %}
+          <div class="alert-error-custom mb-4 animated headShake">
+            ❌ Usuario o contraseña incorrectos.
+          </div>
+        {% endif %}
+
+        <form method="post" id="loginForm">
+          {% csrf_token %}
+          
+          <div class="mb-3">
+            <label class="form-label-custom">👤 Nombre de Usuario</label>
+            <div class="input-group-custom shadow-sm">
+              <span class="icon">👤</span>
+              <input type="text" name="username" id="username" placeholder="Ingrese su usuario" required>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label-custom">🔒 Contraseña</label>
+            <div class="input-group-custom shadow-sm position-relative">
+              <span class="icon">🔒</span>
+              <input type="password" name="password" id="password" placeholder="••••••••" required>
+              <button type="button" class="btn-toggle-eye" onclick="togglePassword()">
+                <span id="eyeIcon">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-submit w-100 py-3 shadow-blue mb-3">
+            🔐 Ingresar al Sistema
+          </button>
+
+          <div class="text-center">
+            <a href="{% url 'password_reset' %}" class="small text-decoration-none text-primary fw-bold opacity-75 hover-opacity-100">
+              ¿Olvidó su contraseña?
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --primary-blue: #007bff;
+    --deep-blue: #0056b3;
+    --soft-bg: #f8fbff;
+    --glass-white: rgba(255, 255, 255, 0.85);
+    --border-anim: conic-gradient(from 0deg, transparent 20%, var(--primary-blue), transparent 80%);
+  }
+
+
+  body {
+    background-image:url("{% static 'img/login.jpeg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+  .brand-logo-circle {
+    width: 70px; height: 70px; background: white; 
+    border-radius: 20px; display: flex; align-items: center; 
+    justify-content: center; box-shadow: 0 10px 25px rgba(0,123,255,0.2);
+  }
+
+  .glass-card {
+    background: transparent !important;
+    border-radius: 28px;
+    position: relative;
+    padding: 2px;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .glass-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: var(--border-anim);
+    animation: rotateBorder 4s linear infinite;
+    z-index: -1;
+  }
+
+  @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+
+  .glass-card .card-body { 
+    background: var(--glass-white); 
+    border-radius: 26px; 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .form-label-custom { font-size: 0.8rem; font-weight: 700; color: #444; margin-bottom: 6px; display: block; }
+  
+  .input-group-custom {
+    display: flex; align-items: center; background: rgba(255, 255, 255, 0.9); 
+    border: 1px solid #e2e8f0; border-radius: 14px; padding: 2px 12px;
+    transition: 0.3s;
+  }
+
+  .input-group-custom:focus-within {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+  }
+
+  .input-group-custom input {
+    border: none !important; background: transparent !important;
+    padding: 12px 0; width: 100%; font-size: 0.95rem; outline: none;
+  }
+
+  .input-group-custom .icon { margin-right: 10px; opacity: 0.5; }
+
+  .btn-toggle-eye {
+    background: none; border: none; padding: 0 5px; cursor: pointer;
+    font-size: 1.1rem; opacity: 0.6; transition: 0.2s;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+    color: white; border: none; border-radius: 50px;
+    font-weight: 700; transition: 0.3s;
+  }
+
+  .btn-submit:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+  .alert-error-custom {
+    background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2;
+    padding: 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; text-align: center;
+  }
+
+  .fadeInUp { animation: fadeInUp 0.6s ease both; }
+  .fadeInUp-delayed { animation: fadeInUp 0.6s ease 0.2s both; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes headShake {
+    0% { transform: translateX(0); }
+    6.5% { transform: translateX(-6px) rotateY(-9deg); }
+    18.5% { transform: translateX(5px) rotateY(7deg); }
+    31.5% { transform: translateX(-3px) rotateY(-5deg); }
+    43.5% { transform: translateX(2px) rotateY(3deg); }
+    50% { transform: translateX(0); }
+  }
+  .animated.headShake { animation: headShake 0.6s ease-in-out; }
+
+  @media (max-width: 576px) {
+    .glass-card .card-body { padding: 1.5rem 1.25rem !important; }
+  }
+</style>
+
+<script>
+  function togglePassword() {
+    const input = document.getElementById("password");
+    const eye = document.getElementById("eyeIcon");
+    if (input.type === "password") {
+      input.type = "text";
+      eye.textContent = "🙈";
+    } else {
+      input.type = "password";
+      eye.textContent = "👁️";
+    }
+  }
+</script>
+{% endblock %}

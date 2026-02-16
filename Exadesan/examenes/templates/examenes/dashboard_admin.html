@@ -1,0 +1,262 @@
+{% extends "examenes/base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+<main class="d-flex flex-column min-vh-100 bg-glass-texture">
+    <div class="base">
+      
+   
+      
+  <section class="hero-elite text-center py-5 position-relative shadow-ultra-sm">
+    <div class="container animate-fade-in">
+      <div class="status-pill-glass mb-3">
+        <span class="pulse-dot"></span> <span class="fw-bold"style="color: white;">ADMIN</span>
+      </div>
+      
+      <h2 class="fw-black display-5 mb-2">
+        <span class="me-2">🧑‍💼</span><span class="gradient-brand-text-pro">Panel de Administración</span>
+      </h2>
+      
+      <div class="header-accent-line mx-auto mb-2"></div>
+      <p class="text-primary-emphasis small fw-bold tracking-widest text-uppercase op-7">Gestión de Infraestructura de Alta Precisión</p>
+    </div>
+  </section>
+
+  <div class="container py-5 flex-grow-1" style="max-width: 480px;">
+    <div class="admin-vertical-stack">
+
+      <div class="col-12 fade-in triple-spacing">
+        <div class="card-elite-pro glow-blue">
+          <div class="card-glass-layer">
+            <div class="module-icon-container">
+              <div class="icon-blob blob-blue"></div>
+              <span class="emoji-elite-pro floating-levitation">👥</span>
+            </div>
+            <h4 class="fw-black text-primary-emphasis mb-2">Usuarios</h4>
+            <div class="pro-divider blue-grad"></div>
+            <p class="text-secondary small mb-4 px-3 fw-medium">Administración de identidades, privilegios y auditoría de accesos seguros.</p>
+            <a href="{% url 'examenes:lista_usuarios' %}" class="btn-pro-action btn-blue-pro">
+              <span>Gestionar Usuarios</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 fade-in delay-1 triple-spacing">
+        <div class="card-elite-pro glow-teal">
+          <div class="card-glass-layer">
+            <div class="module-icon-container">
+              <div class="icon-blob blob-teal"></div>
+              <span class="emoji-elite-pro floating-levitation">📊</span>
+            </div>
+            <h4 class="fw-black text-success-emphasis mb-2">Estadísticas</h4>
+            <div class="pro-divider teal-grad"></div>
+            <p class="text-secondary small mb-4 px-3 fw-medium">Visualización estratégica de estadísticas críticas y tendencias en tiempo real.</p>
+            <a href="{% url 'examenes:estadisticas_medico' %}" class="btn-pro-action btn-teal-pro">
+              <span>Visualizar</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 fade-in delay-2 triple-spacing">
+        <div class="card-elite-pro glow-purple">
+          <div class="card-glass-layer">
+            <div class="module-icon-container">
+              <div class="icon-blob blob-purple"></div>
+              <span class="emoji-elite-pro floating-levitation">⚙️</span>
+            </div>
+            <h4 class="fw-black text-info-emphasis mb-2">Configuración</h4>
+            <div class="pro-divider purple-grad"></div>
+            <p class="text-secondary small mb-4 px-3 fw-medium">Calibración de variables del motor y parámetros de red del core médico.</p>
+            <a href="{% url 'examenes:ver_catalogo' %}" class="btn-pro-action btn-purple-pro">
+              <span>Ajustar Núcleo</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</main>
+
+<style>
+  :root {
+      --e-blue: #0d6efd;
+      --e-teal: #20c997;
+      --e-purple: #6610f2;
+      --e-cyan: #0dcaf0;
+      --e-white: #ffffff;
+      --e-soft-bg: #f8fbff;
+      --admin-bg: rgb(212, 212, 212);
+  }
+
+  body {
+      background-color: var(--admin-bg) !important;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+      background-size: 30px 30px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+  }
+
+  .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #00ff88;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+      box-shadow: 0 0 8px #00ff88;
+      animation: pulse-animation 2s infinite ease-in-out;
+  }
+
+  @keyframes pulse-animation {
+      0% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px #00ff88; }
+      50% { opacity: 0.5; transform: scale(1.2); box-shadow: 0 0 15px #00ff88; }
+      100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px #00ff88; }
+  }
+
+  .status-pill-glass {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 6px 15px;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .hero-elite {
+      background: var(--e-blue);
+      border-radius: 0 0 50px 50px;
+      padding: 3.5rem 1rem;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+      margin-bottom: 2.5rem;
+  }
+
+.gradient-brand-text-pro {
+    background: none; 
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: initial; 
+    
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 2.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.base{
+
+    background-color: var(--admin-bg) !important;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+  .admin-vertical-stack {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: stretch;
+      gap: 25px;
+      padding: 20px;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+  }
+
+  .card-elite-pro {
+      background: var(--e-blue);
+      border-radius: 45px;
+      padding: 3px;
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      flex: 0 1 380px;
+  }
+
+  .card-elite-pro:hover { 
+      transform: translateY(-15px); 
+      filter: brightness(1.02);
+  }
+
+  .card-glass-layer {
+      background: #ffffff; 
+      border-radius: 42px; 
+      padding: 3rem 1.5rem 2.5rem; 
+      text-align: center;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  }
+
+  .glow-blue { box-shadow: 0 25px 50px -12px rgba(13, 110, 253, 0.2); background: linear-gradient(135deg, var(--e-blue), var(--e-cyan)); }
+  .glow-teal { box-shadow: 0 25px 50px -12px rgba(32, 201, 151, 0.2); background: linear-gradient(135deg, var(--e-teal), var(--e-cyan)); }
+  .glow-purple { box-shadow: 0 25px 50px -12px rgba(102, 16, 242, 0.2); background: linear-gradient(135deg, var(--e-purple), var(--e-cyan)); }
+
+  .emoji-elite-pro { 
+      font-size: 3.5rem; 
+      display: inline-block; 
+      margin-bottom: 1rem;
+      -webkit-text-fill-color: initial;
+  }
+
+  .floating-levitation {
+      animation: smoothFloat 4s ease-in-out infinite;
+  }
+
+  @keyframes smoothFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+  }
+
+  .btn-pro-action {
+      display: block; 
+      padding: 16px; 
+      border-radius: 22px; 
+      font-weight: 800;
+      text-transform: uppercase; 
+      font-size: 0.75rem; 
+      letter-spacing: 1px;
+      text-decoration: none; 
+      color: white !important; 
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: none;
+  }
+
+  .btn-blue-pro { background: linear-gradient(135deg, var(--e-blue), var(--e-cyan)); }
+  .btn-teal-pro { background: linear-gradient(135deg, #047481, var(--e-teal)); }
+  .btn-purple-pro { background: linear-gradient(135deg, var(--e-purple), #8b5cf6); }
+
+  .btn-pro-action:hover { 
+      transform: scale(1.1) translateY(-5px); 
+      filter: brightness(1.1); 
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+
+  @media (max-width: 1100px) {
+      .admin-vertical-stack { flex-wrap: wrap; }
+      .card-elite-pro { flex: 0 1 45%; }
+  }
+
+  @media (max-width: 768px) {
+      .admin-vertical-stack {
+          flex-direction: column !important;
+          align-items: center;
+          gap: 30px;
+      }
+      .card-elite-pro { width: 100%; max-width: 350px; }
+      .hero-elite { padding: 2rem 1rem; }
+  }
+</style>
+
+{% endblock %}

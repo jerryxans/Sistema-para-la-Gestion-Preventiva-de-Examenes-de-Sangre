@@ -1,0 +1,292 @@
+{% extends "examenes/base.html" %}
+{% block title %}Médico{% endblock %}
+
+{% block content %}
+<main class="d-flex flex-column min-vh-100 bg-glass-texture">
+  <div class="base">
+    
+
+  <section class="hero-elite text-center py-5 position-relative shadow-ultra-sm">
+    <div class="container animate-fade-in">
+      <div class="status-pill-glass mb-3">
+        <span class="pulse-dot"></span><span class="fw-bold">ENTORNO CLÍNICO</span>
+      </div>
+      
+      <h2 class="fw-black display-5 mb-2">
+        🩺 <span class="gradient-brand-text-pro">Bienvenido al Panel Médico</span>
+      </h2>
+      
+      <div class="header-accent-line mx-auto mb-2"></div>
+      <p class="text-primary-emphasis small fw-bold tracking-widest text-uppercase op-7">Gestión, Carga y Analítica de Pacientes</p>
+    </div>
+  </section>
+
+  <div class="container py-5 flex-grow-1" style="max-width: 480px;">
+    <div class="admin-vertical-stack">
+
+      <div class="col-12 fade-in triple-spacing">
+        <div class="card-elite-pro glow-blue">
+          <div class="card-glass-layer">
+            <div class="module-icon-container">
+              <div class="icon-blob blob-blue"></div>
+              <span class="emoji-elite-pro floating-levitation">📥</span>
+            </div>
+            <h4 class="fw-black text-primary-emphasis mb-2">Carga de Exámenes</h4>
+            <div class="pro-divider blue-grad"></div>
+            <p class="text-secondary small mb-4 px-3 fw-medium">Sube resultados y documentos clínicos con procesamiento inmediato.</p>
+            <a href="{% url 'examenes:cargar_examen' %}" class="btn-pro-action btn-blue-pro">
+              <span>Cargar Resultados</span>
+            </a>
+            <div class="mt-4 security-tag">EFICIENCIA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 fade-in delay-1 triple-spacing">
+        <div class="card-elite-pro glow-teal">
+          <div class="card-glass-layer">
+            <div class="module-icon-container">
+              <div class="icon-blob blob-teal"></div>
+              <span class="emoji-elite-pro floating-levitation">🧑‍⚕️</span>
+            </div>
+            <h4 class="fw-black text-success-emphasis mb-2">Pacientes</h4>
+            <div class="pro-divider teal-grad"></div>
+            <p class="text-secondary small mb-4 px-3 fw-medium">Consulta historiales clínicos y seguimientos de forma segura.</p>
+            <a href="{% url 'examenes:lista_pacientes' %}" class="btn-pro-action btn-teal-pro">
+              <span>Consultar Historial</span>
+            </a>
+            <div class="mt-4 security-tag text-success">SEGURIDAD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 fade-in delay-2 triple-spacing">
+        <div class="card-elite-pro glow-purple">
+          <div class="card-glass-layer">
+            <div class="module-icon-container">
+              <div class="icon-blob blob-purple"></div>
+              <span class="emoji-elite-pro floating-levitation">📈</span>
+            </div>
+            <h4 class="fw-black text-info-emphasis mb-2">Estadísticas</h4>
+            <div class="pro-divider purple-grad"></div>
+            <p class="text-secondary small mb-4 px-3 fw-medium">Analiza tendencias epidemiológicas y métricas de desempeño.</p>
+            <a href="{% url 'examenes:estadisticas_medico' %}" class="btn-pro-action btn-purple-pro">
+              <span>Visualizar</span>
+            </a>
+            <div class="mt-4 security-tag text-info">PREVENCIÓN</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</main>
+
+<style>
+  :root {
+    --e-blue: #0d6efd;
+    --e-teal: #20c997;
+    --e-purple: #6610f2;
+    --e-cyan: #0dcaf0;
+    --e-white: #ffffff;
+    --medical-bg: rgb(212, 212, 212); 
+    --neon-green: #00ff88;
+  }
+  
+  body {
+    background-color: var(--medical-bg) !important;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+    background-size: 30px 30px;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .pulse-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--neon-green);
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 5px;
+    box-shadow: 0 0 10px var(--neon-green);
+    animation: pulse-animation 2s infinite ease-in-out;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse-animation {
+    0% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px var(--neon-green); }
+    50% { opacity: 0.5; transform: scale(1.2); box-shadow: 0 0 18px var(--neon-green); }
+    100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px var(--neon-green); }
+  }
+
+  .status-pill-glass {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 8px 20px;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0,0,0,0.08);
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-elite { 
+    background: var(--e-blue); 
+    border-radius: 0 0 60px 60px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    padding: 3.5rem 1rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .gradient-brand-text-pro {
+    background: none; 
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: initial; 
+    
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 2.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.hero-elite p, .hero-elite span {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #00ff88;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  box-shadow: 0 0 8px #00ff88;
+  animation: pulse-animation 2s infinite ease-in-out;
+}
+
+@keyframes pulse-animation {
+  0% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px #00ff88; }
+  50% { opacity: 0.5; transform: scale(1.2); box-shadow: 0 0 15px #00ff88; }
+  100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px #00ff88; }
+}
+
+.base {
+
+  background-color: var(--medical-bg) ;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+  .admin-vertical-stack {
+    display: flex !important;
+    flex-direction: row !important; 
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    gap: 25px !important;
+    padding: 40px 20px !important;
+    width: 100% !important;
+    max-width: 380px !important;
+    margin: 0 auto !important;
+  }
+
+  .card-elite-pro {
+    background: var(--e-white);
+    border-radius: 50px;
+    padding: 3px;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    flex: 1 1 350px !important; 
+    max-width: 400px !important;
+    min-width: 300px !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+
+  .card-elite-pro:hover { 
+    transform: translateY(-15px); 
+    box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+  }
+
+  .card-glass-layer { 
+    background: #ffffff; 
+    border-radius: 46px; 
+    padding: 3.5rem 1.5rem 2.5rem; 
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .glow-blue { background: linear-gradient(135deg, var(--e-blue), var(--e-cyan)); }
+  .glow-teal { background: linear-gradient(135deg, var(--e-teal), var(--e-cyan)); }
+  .glow-purple { background: linear-gradient(135deg, var(--e-purple), var(--e-cyan)); }
+
+  .emoji-elite-pro { font-size: 3.8rem; position: relative; z-index: 2; display: inline-block; }
+  
+  .floating-levitation { 
+    animation: smoothFloat 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; 
+  }
+
+  @keyframes smoothFloat {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-18px) rotate(4deg); }
+  }
+
+  .btn-pro-action {
+    display: block; 
+    padding: 18px; 
+    border-radius: 24px; 
+    font-weight: 900;
+    text-transform: uppercase; 
+    font-size: 0.75rem; 
+    text-decoration: none; 
+    color: white !important; 
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    border: none; 
+    text-align: center;
+  }
+
+  .btn-blue-pro { background: linear-gradient(135deg, var(--e-blue), var(--e-cyan)); }
+  .btn-teal-pro { background: linear-gradient(135deg, #047481, var(--e-teal)); }
+  .btn-purple-pro { background: linear-gradient(135deg, var(--e-purple), #8b5cf6); }
+
+  .btn-pro-action:hover { 
+    filter: brightness(1.1); 
+    transform: scale(1.1) translateY(-5px); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 1100px) {
+    .admin-vertical-stack { flex-wrap: wrap !important; justify-content: center !important; }
+    .card-elite-pro { flex: 0 1 45% !important; }
+  }
+
+  @media (max-width: 768px) {
+    .admin-vertical-stack {
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 40px !important;
+    }
+    .card-elite-pro { 
+      width: 100% !important; 
+      max-width: 350px !important;
+      flex: none !important;
+    }
+  }
+</style>
+{% endblock %}
